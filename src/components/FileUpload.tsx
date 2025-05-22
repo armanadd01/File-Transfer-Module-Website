@@ -1,9 +1,14 @@
 'use client';
 
-import { useCallback, forwardRef, useImperativeHandle } from 'react';
+import { forwardRef, useImperativeHandle, useEffect } from 'react';
 import { useFileUpload } from '@/hooks/useFileUpload';
 import { formatFileSize } from '@/lib/utils';
 import Image from 'next/image';
+import type { DropzoneFile } from 'dropzone';
+import Dropzone from 'dropzone';
+
+// Add Dropzone CSS
+Dropzone.autoDiscover = false;
 
 export interface FileUploadHandle {
   uploadFiles: () => Promise<void>;
@@ -12,7 +17,8 @@ export interface FileUploadHandle {
 
 type FileUploadProps = React.HTMLAttributes<HTMLDivElement>;
 
-export const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>((props, ref) => {
+export const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(({ className = '', ...props }, ref) => {
+
   const {
     files,
     isUploading,
@@ -21,47 +27,84 @@ export const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>((props, 
     handleFiles,
     uploadFiles,
     clearFiles,
+    setState
   } = useFileUpload({
     maxSize: 2 * 1024 * 1024 * 1024, // 2GB
   });
+
+  type FileUploadState = {
+    files: File[];
+    isUploading: boolean;
+    progress: number;
+    error: string | null;
+  };
 
   useImperativeHandle(ref, () => ({
     uploadFiles,
     files: files,
   }));
 
-  const onDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    handleFiles(e.dataTransfer.files);
-  }, [handleFiles]);
+  useEffect(() => {
+    const dropzone = new Dropzone('#upload-zone', {
+      url: '/api/upload', // We'll create this API endpoint later
+      acceptedFiles: 'image/*',
+      maxFilesize: 10, // MB
+      addRemoveLinks: true,
+      dictDefaultMessage: 'Drop files here or click to upload',
+      previewTemplate: `
+        <div class="dz-preview dz-file-preview">
+          <div class="dz-image">
+            <img data-dz-thumbnail />
+          </div>
+          <div class="dz-details">
+            <div class="dz-filename"><span data-dz-name></span></div>
+            <div class="dz-size"><span data-dz-size></span></div>
+          </div>
+          <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+          <div class="dz-error-message"><span data-dz-errormessage></span></div>
+        </div>
+      `,
+      init: function() {
+        this.on('addedfile', (file: DropzoneFile) => {
+          handleFiles([file as File]);
+        });
+        this.on('uploadprogress', (file: DropzoneFile, progress: number) => {
+          setState((prev: FileUploadState) => ({ ...prev, progress }));
+        });
+        this.on('success', () => {
+          setState(prev => ({
+            ...prev,
+            isUploading: false,
+            progress: 100,
+            files: [],
+          }));
+        });
+        this.on('error', (file: DropzoneFile, errorMessage: string | Error) => {
+          setState(prev => ({
+            ...prev,
+            isUploading: false,
+            error: typeof errorMessage === 'string' ? errorMessage : errorMessage.message || 'Upload failed',
+          }));
+        });
+      }
+    });
 
-  const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-  }, []);
-
-  const onFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      handleFiles(e.target.files);
-    }
-  }, [handleFiles]);
+    return () => {
+      dropzone.destroy();
+    };
+  }, [handleFiles, setState]);
 
   return (
-    <div className="w-full">
-      <input
-        type="file"
-        id="file-upload"
-        className="hidden"
-        multiple
-        onChange={onFileSelect}
-      />
+    <div className={`w-full ${className}`} {...props}>
+      <input type="file" className="hidden" multiple accept="image/*" onChange={e => {
+        if (e.target.files) {
+          handleFiles(Array.from(e.target.files));
+        }
+      }} />
       
       <div
-        className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-12 text-center cursor-pointer hover:border-blue-500 dark:hover:border-blue-400 transition-colors"
-        onDrop={onDrop}
-        onDragOver={onDragOver}
-        onClick={() => document.getElementById('file-upload')?.click()}
+        id="upload-zone"
+        className="dropzone relative p-8 border-2 border-dashed rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors"
       >
         <div className="flex flex-col items-center gap-4">
           <Image

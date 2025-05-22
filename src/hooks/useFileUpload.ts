@@ -2,16 +2,16 @@
 import { useState, useCallback } from 'react';
 import { validateFileType, MAX_FILE_SIZE, ALLOWED_FILE_TYPES } from '@/lib/fileUtils';
 
-interface UseFileUploadOptions {
-  maxSize?: number;
-  allowedTypes?: string[];
-}
-
-interface FileUploadState {
+export interface FileUploadState {
   files: File[];
   isUploading: boolean;
   progress: number;
   error: string | null;
+}
+
+interface UseFileUploadOptions {
+  maxSize?: number;
+  allowedTypes?: string[];
 }
 
 export function useFileUpload(options: UseFileUploadOptions = {}) {
@@ -108,5 +108,6 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
     handleFiles,
     uploadFiles,
     clearFiles,
+    setState,
   };
 }
