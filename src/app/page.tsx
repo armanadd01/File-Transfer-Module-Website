@@ -13,8 +13,8 @@ export default function Home() {
       <main className="container mx-auto px-4 py-16">
         <Header />
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Simple & Fast File Transfer</h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300">Send files securely with just a few clicks</p>
+          <h1 className="text-4xl font-bold mb-4 ">Simple & Fast File Transfer</h1>
+          <p className="text-lg text-gray-600 dark:text-gray-900">Send files securely with just a few clicks</p>
         </div>
 
         <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 border border-gray-200 dark:border-gray-700">
@@ -23,7 +23,7 @@ export default function Home() {
           <div className="mt-8 flex justify-between items-center">
             <Link 
               href="/transfers"
-              className="text-sm text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+              className="text-sm text-gray-600 dark:text-gray-100 hover:text-blue-500 dark:hover:text-blue-400"
             >
               View transfer history
             </Link>
