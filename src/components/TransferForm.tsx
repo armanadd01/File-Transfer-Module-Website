@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 export const TransferForm = () => {
   const [email, setEmail] = useState('');
-  const [files, setFiles] = useState<File[]>([]);
+  // const [_files, _setFiles] = useState<File[]>([]);
 
   const handleAddFiles = () => {
     // Add file handling logic
