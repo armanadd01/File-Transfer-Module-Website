@@ -1,3 +1,5 @@
+"use client";
+
 import Link from 'next/link';
 import { UserProfile } from './UserProfile';
 import Image from 'next/image';
@@ -9,7 +11,7 @@ export const Header = () => {
       <div className="flex items-center gap-8">
         <Link href="/" className="text-2xl font-bold">
           <Image
-            src="https://assets.multilat.xyz/branding/logos/multilat-logo.svg" 
+            src="https://assets.multilat.xyz/branding/logos/multilat-logo-light.svg" 
             alt="Logo"    
             width={200}
             height={200}
