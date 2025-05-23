@@ -1,5 +1,5 @@
 .dropzone {
-  min-height: 300px;
+  min-height: 100vh;
   width: 100%;
   position: relative;
   transition: all 0.3s ease;
@@ -13,21 +13,36 @@
   text-align: center;
 }
 
+:root[class~="dark"] .dropzone .dz-message h3 {
+  color: #f3f4f6;
+}
+
 .dropzone .dz-message h3 {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 10px;
-  color: #000;
+  color: #1f2937;
+  transition: color 0.3s ease;
+}
+
+:root[class~="dark"] .dropzone .dz-message p {
+  color: #9ca3af;
 }
 
 .dropzone .dz-message p {
-  color: #666;
+  color: #4b5563;
   margin-bottom: 5px;
+  transition: color 0.3s ease;
+}
+
+:root[class~="dark"] .dropzone .dz-message p.note {
+  color: #6b7280;
 }
 
 .dropzone .dz-message p.note {
   font-size: 14px;
-  color: #999;
+  color: #6b7280;
+  transition: color 0.3s ease;
 }
 
 .dropzone .dz-message p.note strong {
@@ -35,26 +50,36 @@
 }
 
 /* Preview container */
+:root[class~="dark"] .dropzone .dz-preview {
+  background: #1f2937;
+}
+
 .dropzone .dz-preview {
   position: relative;
   width: 100%;
   aspect-ratio: 1;
-  background: #f9f9f9;
+  background: #f3f4f6;
   border-radius: 0.5rem;
   overflow: hidden;
   display: block;
+  transition: background-color 0.3s ease;
 }
 
 /* File preview */
+:root[class~="dark"] .dropzone .dz-preview .dz-image {
+  background: #374151;
+}
+
 .dropzone .dz-preview .dz-image {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #eee;
+  background: #e5e7eb;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  transition: background-color 0.3s ease;
 }
 
 .dropzone .dz-preview .dz-image img {
@@ -64,6 +89,10 @@
 }
 
 /* File details */
+:root[class~="dark"] .dropzone .dz-preview .dz-details {
+  background: rgba(0, 0, 0, 0.7);
+}
+
 .dropzone .dz-preview .dz-details {
   position: absolute;
   top: 0;
@@ -71,7 +100,7 @@
   right: 0;
   bottom: 0;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: all 0.3s ease;
   background: rgba(0, 0, 0, 0.5);
   border-radius: 10px;
   padding: 10px;
@@ -101,6 +130,10 @@
 }
 
 /* Progress bar */
+:root[class~="dark"] .dropzone .dz-preview .dz-progress {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 .dropzone .dz-preview .dz-progress {
   position: absolute;
   left: 50%;
@@ -108,23 +141,27 @@
   transform: translate(-50%, -50%);
   width: 80%;
   height: 26px;
-  background: rgba(60, 52, 52, 0.814);
+  background: rgba(0, 0, 0, 0.1);
   border-radius: 3px;
   overflow: hidden;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .dropzone .dz-preview.dz-processing .dz-progress {
   opacity: 1;
 }
 
+:root[class~="dark"] .dropzone .dz-preview .dz-progress .dz-upload {
+  background: #3b82f6;
+}
+
 .dropzone .dz-preview .dz-progress .dz-upload {
   display: block;
   height: 100%;
   width: 0;
-  background: #fff;
-  transition: width 0.3s ease;
+  background: #2563eb;
+  transition: all 0.3s ease;
 }
 
 /* Success and error marks */
@@ -146,25 +183,36 @@
   display: block;
 }
 
+:root[class~="dark"] .dropzone .dz-preview .dz-success-mark svg,
+:root[class~="dark"] .dropzone .dz-preview .dz-error-mark svg {
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
+}
+
 .dropzone .dz-preview .dz-success-mark svg,
 .dropzone .dz-preview .dz-error-mark svg {
   width: 40px;
   height: 40px;
-  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
+  transition: filter 0.3s ease;
 }
 
 /* Error message */
+:root[class~="dark"] .dropzone .dz-preview .dz-error-message {
+  background: #991b1b;
+}
+
 .dropzone .dz-preview .dz-error-message {
   position: absolute;
   top: 130px;
   left: 0;
   right: 0;
-  background: #be2626;
+  background: #dc2626;
   color: white;
   padding: 8px;
   border-radius: 0 0 10px 10px;
   text-align: center;
   display: none;
+  transition: background-color 0.3s ease;
 }
 
 .dropzone .dz-preview.dz-error:hover .dz-error-message {
@@ -180,13 +228,17 @@
 }
 
 /* Remove button */
+:root[class~="dark"] .dropzone .dz-preview .dz-remove {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 .dropzone .dz-preview .dz-remove {
   position: absolute;
   top: 10px;
   right: 10px;
   width: 24px;
   height: 24px;
-  background: #dcd8d7;
+  background: rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(10px);
   color: white;
   border-radius: 50%;
@@ -198,10 +250,15 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   z-index: 20;
   text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+:root[class~="dark"] .dropzone .dz-preview .dz-remove:hover {
+  background: #dc2626;
 }
 
 .dropzone .dz-preview .dz-remove:hover {
-  background: #d63030;
+  background: #ef4444;
 }
 
 /* Multiple file layout */

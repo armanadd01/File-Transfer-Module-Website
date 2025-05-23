@@ -163,7 +163,7 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(({
   }, []);
 
   return (
-    <div className={`w-full space-y-6 ${className}`} {...props}>
+    <div className={`w-full  ${className}`} {...props}>
       <div
         id="upload-zone"
         className="dropzone relative flex flex-col items-center justify-center p-8 bg-gray-50 dark:bg-gray-800/50 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg transition-colors duration-150 ease-in-out hover:border-primary-500 dark:hover:border-primary-500 cursor-pointer"

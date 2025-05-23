@@ -10,9 +10,9 @@ export const GradientBackground = ({
   variant = 'default' 
 }: GradientBackgroundProps) => {
   const gradients = {
-    'default': 'from-blue-600 via-purple-500 to-pink-500',
-    'blue-purple': 'from-blue-600 to-purple-600',
-    'green': 'from-green-400 to-emerald-600'
+    'default': 'from-blue-600 via-purple-500 to-pink-500 dark:from-blue-500 dark:via-purple-400 dark:to-pink-400 dark:opacity-75',
+    'blue-purple': 'from-blue-600 to-purple-600 dark:from-blue-500 dark:to-purple-500 dark:opacity-75',
+    'green': 'from-green-400 to-emerald-600 dark:from-green-500 dark:to-emerald-500 dark:opacity-75'
   };
 
   return (

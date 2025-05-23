@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "@/styles/dropzone.css";
 import { ThemeProvider } from "@/context/ThemeContext";
-import ThemeBodyClassProvider from "@/context/ThemeBodyClassProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,9 +30,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased transition-colors duration-300`}
       >
         <ThemeProvider>
-          <ThemeBodyClassProvider>
-            {children}
-          </ThemeBodyClassProvider>
+          {children}
         </ThemeProvider>
       </body>
     </html>

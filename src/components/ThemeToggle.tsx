@@ -5,12 +5,12 @@ import { useTheme } from '../context/ThemeContext';
 import { motion } from 'framer-motion';
 
 export const ThemeToggle: React.FC = () => {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, resolvedTheme, toggleTheme } = useTheme();
   const isDark = theme === 'dark';
   const isSystem = theme === 'system';
-  
-  // Determine the icon and colors based on current theme
-  const getThemeDisplay = () => {
+  const isResolvedDark = resolvedTheme === 'dark';
+
+  const getThemeDisplay = React.useCallback(() => {
     if (isSystem) {
       return {
         icon: (
@@ -19,14 +19,14 @@ export const ThemeToggle: React.FC = () => {
             <path fillRule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clipRule="evenodd" />
           </svg>
         ),
-        bgColor: '#e2e8f0',
-        knobColor: '#cbd5e1'
+        bgColor: isResolvedDark ? '#1f2937' : '#e2e8f0',
+        knobColor: isResolvedDark ? '#374151' : '#cbd5e1'
       };
     }
     if (isDark) {
       return {
         icon: (
-          <svg className="w-4 h-4 text-indigo-900" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <svg className="w-4 h-4 text-indigo-200" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
             <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
           </svg>
         ),
@@ -43,8 +43,8 @@ export const ThemeToggle: React.FC = () => {
       bgColor: '#dbeafe',
       knobColor: '#fcd34d'
     };
-  };
-  
+  }, [isDark, isSystem, isResolvedDark]);
+
   const themeDisplay = getThemeDisplay();
 
   return (
@@ -58,7 +58,7 @@ export const ThemeToggle: React.FC = () => {
         aria-label={`Switch theme mode (currently ${theme} mode)`}
       >
         <span className="absolute opacity-0 group-hover:opacity-100 bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs font-medium text-white bg-gray-900 dark:bg-gray-700 rounded-md shadow-sm transition-opacity duration-300 pointer-events-none whitespace-nowrap">
-          {isSystem ? 'Using system preference' : `Currently in ${theme} mode`}<br />
+          {isSystem ? `Using system preference (${resolvedTheme})` : `Currently in ${theme} mode`}<br />
           Click to cycle through modes
         </span>
         <motion.div 
