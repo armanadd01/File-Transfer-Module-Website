@@ -1,12 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { FileUpload } from '@/components/FileUpload';
+import FileUpload from '@/components/FileUpload';
 import { useRef } from 'react';
 import { Header } from '@/components/Header';
 
 export default function Home() {
-  const uploadRef = useRef<{ uploadFiles: () => Promise<void>; files: File[] }>(null);
+  const uploadRef = useRef<{ uploadFiles: () => Promise<void>; files: File[]; clearFiles: () => void } | null>(null);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
