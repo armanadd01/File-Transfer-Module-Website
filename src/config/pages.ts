@@ -23,5 +23,10 @@ export const pages = [
     name: "Branding",
     href: "branding",
     description: "Customize your transfer portal"
+  },
+  {
+    name: "History",
+    href: "history",
+    description: "View your transfer history"
   }
 ];

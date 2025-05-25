@@ -26,7 +26,8 @@ export const Header = () => {
               { id: 'transfers', name: 'Transfers' },
               { id: 'pricing', name: 'Pricing' },
               { id: 'reviews', name: 'Reviews' },
-              { id: 'branding', name: 'Branding' }
+              { id: 'branding', name: 'Branding' },
+              { id: 'history', name: 'History' },
             ].map((item) => (
               <button
                 key={item.id}

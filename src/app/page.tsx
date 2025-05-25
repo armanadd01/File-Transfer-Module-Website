@@ -21,7 +21,12 @@ export default function Home() {
     <NavigationProvider>
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
         <main className="flex flex-col min-h-screen">
+          <Header />
           <div className="flex flex-1">
+            <div className="w-[40%] h-screen bg-white dark:bg-gray-900 shadow-lg border-l border-gray-200 dark:border-gray-700 transition-colors duration-300">
+              
+              <ChildPages />
+            </div>
             <div className="w-[60%] h-screen bg-white dark:bg-gray-900  transition-colors duration-300">
             <FileUpload ref={uploadRef} />
               {/* <div className="max-w-2xl mx-auto">
@@ -33,10 +38,7 @@ export default function Home() {
                 </div>
               </div> */}
             </div>
-            <div className="w-[40%] h-screen bg-white dark:bg-gray-900 shadow-lg border-l border-gray-200 dark:border-gray-700 transition-colors duration-300">
-              <Header />
-              <ChildPages />
-            </div>
+            
           </div>
         </main>
       </div>

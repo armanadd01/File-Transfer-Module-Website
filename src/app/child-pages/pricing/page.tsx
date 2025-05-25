@@ -1,6 +1,9 @@
 "use client";
 
 import React from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 
 const plans = [
   {
@@ -73,7 +76,7 @@ const plans = [
 
 export default function PricingPage() {
   return (
-    <div className="p-8 bg-white dark:bg-gray-800 min-h-screen transition-colors duration-300">
+    <div className="p-8 bg-white dark:bg-gray-800 min-h-screen pt-[5vh] transition-colors duration-300">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold mb-4 text-gray-900 dark:text-white">You&apos;ve got the ideas,<br />we&apos;ve got the plans</h1>
@@ -82,62 +85,61 @@ export default function PricingPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {plans.map((plan) => (
-            <div
+            <Card
               key={plan.name}
-              className={`p-6 rounded-lg border ${
-                plan.highlight
-                  ? 'border-blue-500 dark:border-blue-400 shadow-lg'
-                  : 'border-gray-200 dark:border-gray-700'
-              } bg-white dark:bg-gray-800 transition-all duration-150`}
+              className={cn(
+                "relative",
+                plan.highlight && "border-2 border-primary shadow-lg"
+              )}
             >
-              <div className="mb-8">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{plan.name}</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">{plan.description}</p>
-                <div className="flex items-baseline">
-                  <span className="text-3xl font-bold text-gray-900 dark:text-white">{plan.price}</span>
+              <CardHeader>
+                <CardTitle>{plan.name}</CardTitle>
+                <CardDescription>{plan.description}</CardDescription>
+                <div className="flex items-baseline mt-2">
+                  <span className="text-3xl font-bold">{plan.price}</span>
                   {plan.period && (
-                    <span className="ml-2 text-gray-500 dark:text-gray-400">{plan.period}</span>
+                    <span className="ml-2 text-muted-foreground">{plan.period}</span>
                   )}
                 </div>
-              </div>
+              </CardHeader>
 
-              <ul className="mb-8 space-y-4">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start">
-                    <svg className="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span className="text-gray-600 dark:text-gray-400">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <button
-                className={`w-full py-3 rounded-lg font-medium transition-colors duration-150 ${
-                  plan.buttonVariant === 'primary'
-                    ? 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white'
-                    : 'border border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 text-gray-700 dark:text-gray-300'
-                }`}
-              >
-                {plan.buttonText}
-              </button>
-            </div>
+              <CardContent className="space-y-4">
+                <ul className="space-y-2">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex items-start">
+                      <svg className="w-5 h-5 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="text-muted-foreground">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Button 
+                  className="w-full" 
+                  variant={plan.highlight ? "default" : "outline"}
+                >
+                  {plan.buttonText}
+                </Button>
+              </CardContent>
+            </Card>
           ))}
         </div>
 
-        <div className="mt-16 p-8 rounded-lg bg-gray-50 dark:bg-gray-700 text-center">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Other plans</h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">Share one large file</p>
-          <div className="flex justify-center items-center gap-4">
-            <div className="text-left">
-              <div className="text-sm text-gray-500 dark:text-gray-400">Share up to 100 GB / month</div>
-              <div className="font-semibold text-gray-900 dark:text-white">$9</div>
+        <Card className="mt-16">
+          <CardHeader>
+            <CardTitle>Other plans</CardTitle>
+            <CardDescription>Share one large file</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex justify-center items-center gap-4">
+              <div className="text-left">
+                <div className="text-sm text-muted-foreground">Share up to 100 GB / month</div>
+                <div className="font-semibold">$9</div>
+              </div>
+              <Button variant="outline">Continue</Button>
             </div>
-            <button className="px-6 py-2 border border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 rounded-lg text-gray-700 dark:text-gray-300 transition-colors duration-150">
-              Continue
-            </button>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
