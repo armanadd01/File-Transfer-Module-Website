@@ -3,6 +3,8 @@
   width: 100%;
   position: relative;
   transition: all 0.3s ease;
+  overflow-y: scroll;
+  max-height: 100vh;
 }
 
 .dropzone.dz-drag-hover {

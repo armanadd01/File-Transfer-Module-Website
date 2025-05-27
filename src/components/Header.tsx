@@ -16,7 +16,8 @@ interface HeaderProps {
 
 export function Header({ showBackButton, onBack, title }: HeaderProps) {
   // Make useNavigation optional to handle cases when Header is used outside NavigationProvider
-  const navigation = { activePage: '', setActivePage: (_: string) => { /* empty function */ } };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const navigation = { activePage: '', setActivePage: (page: string) => {} };
   try {
     const nav = useNavigation();
     if (nav) {
@@ -106,4 +107,4 @@ export function Header({ showBackButton, onBack, title }: HeaderProps) {
       
       
   );
-};
+}

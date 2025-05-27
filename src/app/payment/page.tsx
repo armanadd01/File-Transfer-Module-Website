@@ -1,11 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import * as z from 'zod';
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
@@ -13,21 +11,21 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Header } from '@/components/Header';
 
-const formSchema = z.object({
-  paymentMethod: z.enum(['card', 'paypal']),
-  cardNumber: z.string().min(16, 'Card number must be at least 16 digits').max(19).optional(),
-  expirationDate: z.string().min(5, 'Invalid expiration date').max(5).optional(),
-  securityCode: z.string().min(3, 'Invalid security code').max(4).optional(),
-  firstName: z.string().min(2, 'First name is required'),
-  zipCode: z.string().optional(),
-  country: z.string().min(2, 'Country is required'),
-  isBusinessPurchase: z.boolean(), // Remove .default(false) to make it required
-  companyName: z.string().optional(),
-  address: z.string().optional(),
-  city: z.string().optional(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+// Define form values interface
+interface FormValues {
+  paymentMethod: 'card' | 'paypal';
+  cardNumber: string;
+  expirationDate: string;
+  securityCode: string;
+  firstName: string;
+  zipCode: string;
+  country: string;
+  isBusinessPurchase: boolean;
+  companyName: string;
+  address: string;
+  city: string;
+  promoCode: string;
+}
 
 const countries = [
   { value: 'nl', label: 'Netherlands' },
@@ -36,19 +34,55 @@ const countries = [
   { value: 'uk', label: 'United Kingdom' },
 ];
 
+const plans = {
+  pro: {
+    name: 'Pro Plan',
+    monthly: 23,
+    yearly: 230, // 10 months price for yearly (2 months free)
+  },
+  business: {
+    name: 'Business Plan',
+    monthly: 49,
+    yearly: 490, // 10 months price for yearly (2 months free)
+  }
+};
+
+const validPromoCodes = [
+  { code: 'getFree', discount: 0.17 },
+  { code: 'getoff', discount: 0.17 },
+  { code: 'aru', discount: 0.17 },
+  { code: 'multilat', discount: 0.17 }
+];
+
 export default function PaymentPage() {
   const router = useRouter();
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'paypal'>('card');
   const [isBusinessPurchase, setIsBusinessPurchase] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<'pro' | 'business'>('pro');
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+  const [appliedPromoCode, setAppliedPromoCode] = useState<string | null>(null);
+  const [discount, setDiscount] = useState(0);
+  const [showPromoInput, setShowPromoInput] = useState(false);
+  const [promoInputValue, setPromoInputValue] = useState('');
   
-  // Get plan details from URL
-  const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
-  const planName = searchParams.get('name') || 'WeTransfer Ultimate';
-  const planPrice = searchParams.get('price') || '23';
-  const billingCycle = 'monthly'; // Default to monthly, could be changed to yearly
+  // Get initial plan details from URL if available
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      const planParam = searchParams.get('plan');
+      if (planParam === 'business') {
+        setSelectedPlan('business');
+      }
+    }
+  }, []);
+  
+  // Current plan details
+  const planDetails = plans[selectedPlan];
+  const planName = planDetails.name;
+  const planPrice = billingCycle === 'monthly' ? planDetails.monthly : planDetails.yearly;
 
+  // Use the FormValues interface for proper type checking
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
     defaultValues: {
       paymentMethod: 'card',
       cardNumber: '',
@@ -61,16 +95,73 @@ export default function PaymentPage() {
       companyName: '',
       address: '',
       city: '',
+      promoCode: '',
     },
   });
 
+  // Use the FormValues interface for proper type checking
   function onSubmit(values: FormValues) {
-    console.log(values);
+    // Include selected plan and billing cycle in the form submission
+    const submissionData = {
+      ...values,
+      selectedPlan,
+      billingCycle,
+      appliedPromoCode,
+      finalPrice: calculateFinalPrice()
+    };
+    console.log(submissionData);
     router.push('/success');
   }
 
   const handleBack = () => {
     router.back();
+  };
+  
+  const handleBillingCycleChange = (cycle: 'monthly' | 'yearly') => {
+    setBillingCycle(cycle);
+  };
+  
+
+  
+  const applyPromoCode = () => {
+    console.log('Applying promo code:', promoInputValue);
+    
+    if (!promoInputValue) {
+      // Show error for empty promo code
+      alert('Please enter a promo code');
+      return;
+    }
+    
+    const validPromo = validPromoCodes.find(p => p.code === promoInputValue);
+    
+    if (validPromo) {
+      setAppliedPromoCode(promoInputValue);
+      setDiscount(validPromo.discount);
+      setShowPromoInput(false);
+      form.setValue('promoCode', promoInputValue);
+      console.log('Valid promo code applied:', promoInputValue, 'with discount:', validPromo.discount);
+    } else {
+      // Show error for invalid promo code
+      alert('Invalid promo code');
+      console.log('Invalid promo code:', promoInputValue);
+    }
+  };
+  
+  const removePromoCode = () => {
+    setAppliedPromoCode(null);
+    setDiscount(0);
+    form.setValue('promoCode', '');
+  };
+  
+  const calculateFinalPrice = () => {
+    let price = planPrice;
+    
+    // Apply discount if promo code is applied
+    if (appliedPromoCode) {
+      price = price * (1 - discount);
+    }
+    
+    return Math.round(price * 100) / 100; // Round to 2 decimal places
   };
   
   const handlePaymentMethodChange = (method: 'card' | 'paypal') => {
@@ -381,12 +472,10 @@ export default function PaymentPage() {
                 {/* Submit Button */}
                 
                 <Button 
-                  className="w-full" 
-                  variant={"default"} 
-                  size="lg"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg"
                   type="submit"
                 >
-                  Purchase {planName}
+                  Purchase {planName} (${calculateFinalPrice()})
                 </Button>
               </form>
             </Form>
@@ -398,35 +487,43 @@ export default function PaymentPage() {
               <div className="text-sm text-gray-500 mb-1">Your plan</div>
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold">{planName}</h2>
-                <button className="text-gray-400">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                  </svg>
-                </button>
+                <div className="relative inline-block">
+                  <button 
+                    onClick={() => setSelectedPlan(selectedPlan === 'pro' ? 'business' : 'pro')}
+                    className="text-blue-600 text-sm font-medium"
+                  >
+                    Switch to {selectedPlan === 'pro' ? 'Business' : 'Pro'}
+                  </button>
+                </div>
               </div>
-              <div className="text-gray-600 mt-1">arman&apos;s workspace</div>
+              <div className="text-gray-600 dark:text-gray-400 mt-1">arman&apos;s workspace</div>
             </div>
             
             <div className="border-t pt-4">
               <div className="flex items-center justify-between mb-2">
-                <div className="text-gray-600">Billing cycle</div>
-                <div className="flex items-center">
-                  <span className="font-medium mr-1">{billingCycle === 'monthly' ? 'Monthly' : 'Yearly'}</span>
-                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                  </svg>
+                <div className="text-gray-600 dark:text-gray-400">Billing cycle</div>
+                <div className="relative inline-block">
+                  <button 
+                    onClick={() => handleBillingCycleChange(billingCycle === 'monthly' ? 'yearly' : 'monthly')}
+                    className="flex items-center text-blue-600 font-medium"
+                  >
+                    <span className="mr-1">{billingCycle === 'monthly' ? 'Monthly' : 'Yearly'}</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </button>
                 </div>
               </div>
               
               <div className="flex items-center justify-between">
                 <div className="text-gray-600">${planPrice} x {billingCycle === 'monthly' ? '1 month' : '12 months'}</div>
-                <div className="font-bold">${billingCycle === 'monthly' ? planPrice : Number(planPrice) * 12}</div>
+                <div className="font-bold">${billingCycle === 'monthly' ? planPrice : planPrice}</div>
               </div>
               
               {billingCycle === 'yearly' && (
                 <div className="flex items-center justify-between mt-2">
-                  <div className="text-gray-600">17% off yearly</div>
-                  <div className="font-bold text-green-600">- ${Math.round(Number(planPrice) * 12 * 0.17)}</div>
+                  <div className="text-gray-600">2 months free with yearly</div>
+                  <div className="font-bold text-green-600">Save ${Math.round(planDetails.monthly * 2)}</div>
                 </div>
               )}
             </div>
@@ -434,34 +531,77 @@ export default function PaymentPage() {
             <div className="border-t pt-4">
               <div className="flex items-center justify-between mb-2">
                 <div className="text-gray-600">Promo code</div>
-                <button className="text-blue-600 text-sm font-medium">Add</button>
+                {!appliedPromoCode && !showPromoInput && (
+                  <button 
+                    onClick={() => setShowPromoInput(true)}
+                    className="text-blue-600 text-sm font-medium"
+                  >
+                    Add
+                  </button>
+                )}
+                {appliedPromoCode && (
+                  <button 
+                    onClick={removePromoCode}
+                    className="text-red-600 text-sm font-medium"
+                  >
+                    Remove
+                  </button>
+                )}
               </div>
+              
+              {showPromoInput && !appliedPromoCode && (
+                <div className="flex gap-2 mt-2">
+                  <div className="flex-1">
+                    <Input 
+                      placeholder="Enter promo code" 
+                      value={promoInputValue}
+                      onChange={(e) => setPromoInputValue(e.target.value)}
+                      type="text"
+                    />
+                  </div>
+                  <Button 
+                    type="button" 
+                    onClick={applyPromoCode}
+                    className="shrink-0"
+                  >
+                    Apply
+                  </Button>
+                </div>
+              )}
+              
+              {appliedPromoCode && (
+                <div className="flex items-center justify-between mt-2">
+                  <div className="text-gray-600 flex items-center">
+                    <span className="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded mr-2">
+                      {appliedPromoCode}
+                    </span>
+                    {discount * 100}% off
+                  </div>
+                  <div className="font-bold text-green-600">- ${(planPrice * discount).toFixed(2)}</div>
+                </div>
+              )}
             </div>
             
             <div className="border-t pt-4">
               <div className="flex items-center justify-between">
                 <div className="font-semibold">Today&apos;s total</div>
-                <div className="text-xl font-bold">${billingCycle === 'monthly' 
-                  ? planPrice 
-                  : Math.round(Number(planPrice) * 12 * 0.83)}</div>
+                <div className="text-xl font-bold">${calculateFinalPrice()}</div>
               </div>
               
-              {billingCycle === 'monthly' && (
+              {billingCycle === 'monthly' && !appliedPromoCode && (
                 <div className="mt-4 bg-purple-50 p-3 rounded-lg">
                   <p className="text-sm text-purple-700 flex items-center">
                     <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                       <path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" />
                     </svg>
-                    Save 17% by switching to yearly billing
+                    Save by switching to yearly billing
                   </p>
                 </div>
               )}
               
-              {billingCycle === 'yearly' && (
-                <div className="text-sm text-gray-600 mt-2">
-                  You'll pay the first seat. You can add members later.
-                </div>
-              )}
+              <div className="text-sm text-gray-600 mt-2">
+                {billingCycle === 'yearly' ? "You'll pay for the full year upfront." : "You'll be billed monthly."}
+              </div>
             </div>
           </div>
         </div>
