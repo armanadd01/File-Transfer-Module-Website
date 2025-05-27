@@ -45,11 +45,12 @@ const integrations = [
 ];
 
 export default function IntegrationsPage() {
-  const [enabledIntegrations, setEnabledIntegrations] = React.useState(
+  // Define a type for the enabled integrations state
+  const [enabledIntegrations, setEnabledIntegrations] = React.useState<Record<string, boolean>>(
     integrations.reduce((acc, integration) => ({
       ...acc,
       [integration.id]: integration.enabled,
-    }), {})
+    }), {} as Record<string, boolean>)
   );
 
   const handleToggle = (id: string) => {
