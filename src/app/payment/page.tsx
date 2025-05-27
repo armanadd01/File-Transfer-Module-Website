@@ -24,6 +24,12 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+const countries = [
+  { value: 'netherlands', label: 'Netherlands' },
+  { value: 'us', label: 'United States' },
+  { value: 'uk', label: 'United Kingdom' },
+];
+
 export default function PaymentPage() {
   const router = useRouter();
   const form = useForm<FormValues>({
@@ -67,7 +73,19 @@ export default function PaymentPage() {
                             <FormItem>
                               <FormLabel>Card number</FormLabel>
                               <FormControl>
-                                <Input placeholder="1234 1234 1234 1234" {...field} />
+                                <Input
+                                  placeholder="1234 1234 1234 1234"
+                                  {...field}
+                                  onChange={e => {
+                                    // Format as ATM card number: 1234 5678 9012 3456
+                                    let value = e.target.value.replace(/\D/g, '').slice(0, 16);
+                                    value = value.replace(/(.{4})/g, '$1 ').trim();
+                                    field.onChange(value);
+                                  }}
+                                  value={field.value}
+                                  inputMode="numeric"
+                                  maxLength={19}
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -81,7 +99,32 @@ export default function PaymentPage() {
                               <FormItem>
                                 <FormLabel>Expiration date</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="MM/YY" {...field} />
+                                  <Input
+                                    placeholder="MM/YY"
+                                    {...field}
+                                    onChange={e => {
+                                      // Format as MM/YY and restrict month to 12
+                                      let value = e.target.value.replace(/[^\d]/g, '').slice(0, 4);
+                                      let month = value.slice(0, 2);
+                                      if (month.length === 2) {
+                                        let monthNum = parseInt(month, 10);
+                                        if (monthNum > 12) {
+                                          month = '12';
+                                          value = month + value.slice(2);
+                                        } else if (monthNum === 0) {
+                                          month = '01';
+                                          value = month + value.slice(2);
+                                        }
+                                      }
+                                      if (value.length >= 3) {
+                                        value = value.slice(0, 2) + '/' + value.slice(2);
+                                      }
+                                      field.onChange(value);
+                                    }}
+                                    value={field.value}
+                                    inputMode="numeric"
+                                    maxLength={5}
+                                  />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -94,7 +137,18 @@ export default function PaymentPage() {
                               <FormItem>
                                 <FormLabel>Security code</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="123" {...field} />
+                                  <Input 
+                                    placeholder="123" 
+                                    {...field}
+                                    value={field.value}
+                                    inputMode="numeric"
+                                    maxLength={4}
+                                    onChange={e => {
+                                      // Restrict to 3 digits
+                                      let value = e.target.value.replace(/\D/g, '').slice(0, 4);
+                                      field.onChange(value);
+                                    }}
+                                  />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -144,9 +198,11 @@ export default function PaymentPage() {
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="netherlands">Netherlands</SelectItem>
-                                  <SelectItem value="us">United States</SelectItem>
-                                  <SelectItem value="uk">United Kingdom</SelectItem>
+                                  {countries.map((country) => (
+                                    <SelectItem key={country.value} value={country.value}>
+                                      {country.label}
+                                    </SelectItem>
+                                  ))}
                                 </SelectContent>
                               </Select>
                               <FormMessage />

@@ -1,10 +1,10 @@
 "use client";
 
 import Link from 'next/link';
-import { UserProfile } from './UserProfile';
 import Image from 'next/image';
 import { ThemeToggle } from './ThemeToggle';
 import { useNavigation } from '@/context/NavigationContext';
+import { ProfileDropdown } from './ProfileDropdown';
 
 export const Header = () => {
   const { activePage, setActivePage } = useNavigation();
@@ -44,7 +44,7 @@ export const Header = () => {
           <Link href="/upgrade" className="text-purple-600 font-medium dark:text-purple-400">
             Upgrade
           </Link>
-          <UserProfile />
+          <ProfileDropdown />
         </div>
       </header>
 
