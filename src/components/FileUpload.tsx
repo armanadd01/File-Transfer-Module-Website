@@ -167,7 +167,7 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(({
     <div className={`w-full  ${className}`} {...props}>
       <Card
         id="upload-zone"
-        className="dropzone relative flex flex-col items-center justify-center p-8 bg-gray-50 dark:bg-gray-800/50 dark:border-gray-700 rounded-lg transition-colors duration-150 ease-in-out hover:border-primary-500 dark:hover:border-primary-500 cursor-pointer"
+        className="dropzone rounded-none relative flex flex-col items-center justify-center p-8 bg-gray-50 dark:bg-gray-800/50 dark:border-gray-700 transition-colors duration-150 ease-in-out hover:border-primary-500 dark:hover:border-primary-500 cursor-pointer"
       >
         <AnimatePresence>
           {files.length === 0 && (

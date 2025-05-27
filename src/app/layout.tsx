@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "@/styles/dropzone.css";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { CookieToast } from '@/components/CookieToast';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,7 @@ export default function RootLayout({
       >
         <ThemeProvider>
           {children}
+          <CookieToast />
         </ThemeProvider>
       </body>
     </html>
