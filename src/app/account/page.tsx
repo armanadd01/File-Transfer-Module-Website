@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -33,7 +32,6 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
 type SecurityFormValues = z.infer<typeof securityFormSchema>;
 
 export default function AccountPage() {
-  const router = useRouter();
 
   const profileForm = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
