@@ -57,8 +57,8 @@ const plans = [
 export default function PlansPage() {
   const router = useRouter();
 
-  const handleUpgrade = (planId: string) => {
-    router.push(`/payment?plan=${planId}`);
+  const handleUpgrade = (plan: typeof plans[0]) => {
+    router.push(`/payment?plan=${plan.id}&name=${encodeURIComponent(plan.name)}&price=${plan.price}`);
   };
 
   return (
@@ -121,7 +121,7 @@ export default function PlansPage() {
                   ) : (
                     <Button
                       className="w-full"
-                      onClick={() => handleUpgrade(plan.id)}
+                      onClick={() => handleUpgrade(plan)}
                     >
                       Upgrade to {plan.name}
                     </Button>

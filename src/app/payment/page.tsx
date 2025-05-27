@@ -1,285 +1,469 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Header } from '@/components/Header';
 
 const formSchema = z.object({
-  cardNumber: z.string().min(16, 'Invalid card number'),
-  expirationDate: z.string().min(5, 'Invalid expiration date'),
-  securityCode: z.string().min(3, 'Invalid security code'),
-  firstName: z.string().min(1, 'First name is required'),
-  zipCode: z.string().min(1, 'Zip code is required'),
-  country: z.string().min(1, 'Country is required'),
-  isBusinessPurchase: z.boolean(),
+  paymentMethod: z.enum(['card', 'paypal']),
+  cardNumber: z.string().min(16, 'Card number must be at least 16 digits').max(19).optional(),
+  expirationDate: z.string().min(5, 'Invalid expiration date').max(5).optional(),
+  securityCode: z.string().min(3, 'Invalid security code').max(4).optional(),
+  firstName: z.string().min(2, 'First name is required'),
+  zipCode: z.string().optional(),
+  country: z.string().min(2, 'Country is required'),
+  isBusinessPurchase: z.boolean(), // Remove .default(false) to make it required
+  companyName: z.string().optional(),
+  address: z.string().optional(),
+  city: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
 const countries = [
-  { value: 'netherlands', label: 'Netherlands' },
+  { value: 'nl', label: 'Netherlands' },
   { value: 'us', label: 'United States' },
+  { value: 'ca', label: 'Canada' },
   { value: 'uk', label: 'United Kingdom' },
 ];
 
 export default function PaymentPage() {
   const router = useRouter();
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'paypal'>('card');
+  const [isBusinessPurchase, setIsBusinessPurchase] = useState(false);
+  
+  // Get plan details from URL
+  const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+  const planName = searchParams.get('name') || 'WeTransfer Ultimate';
+  const planPrice = searchParams.get('price') || '23';
+  const billingCycle = 'monthly'; // Default to monthly, could be changed to yearly
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      paymentMethod: 'card',
       cardNumber: '',
       expirationDate: '',
       securityCode: '',
       firstName: '',
       zipCode: '',
-      country: '',
+      country: 'nl',
       isBusinessPurchase: false,
+      companyName: '',
+      address: '',
+      city: '',
     },
   });
 
-  const onSubmit = async (data: FormValues) => {
-    // Here you would typically make an API call to process payment
-    console.log(data);
+  function onSubmit(values: FormValues) {
+    console.log(values);
     router.push('/success');
+  }
+
+  const handleBack = () => {
+    router.back();
+  };
+  
+  const handlePaymentMethodChange = (method: 'card' | 'paypal') => {
+    setPaymentMethod(method);
+    form.setValue('paymentMethod', method);
+  };
+  
+  const handleBusinessPurchaseChange = (checked: boolean) => {
+    setIsBusinessPurchase(checked);
+    form.setValue('isBusinessPurchase', checked);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Choose how to pay</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <div className="space-y-4">
-                    <div className="rounded-lg border p-4">
-                      <h3 className="font-semibold mb-4">Card</h3>
-                      <div className="grid gap-4">
-                        <FormField
-                          control={form.control}
-                          name="cardNumber"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Card number</FormLabel>
-                              <FormControl>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 dark:text-white">
+      <Header showBackButton onBack={handleBack} title="Choose how to pay" />
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <h1 className="text-2xl font-bold mb-8">Choose how to pay</h1>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Payment Form */}
+          <div className="lg:col-span-2 space-y-8">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                {/* Payment Method Selection */}
+                <div className="space-y-4">
+                  {/* Card Option */}
+                  <div 
+                    className={`border rounded-lg p-4 ${paymentMethod === 'card' ? 'border-blue-500' : 'border-gray-200'}`}
+                    onClick={() => handlePaymentMethodChange('card')}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 flex items-center justify-center">
+                        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M22 10H2M22 12V8.2C22 7.0799 22 6.51984 21.782 6.09202C21.5903 5.7157 21.2843 5.40974 20.908 5.21799C20.4802 5 19.9201 5 18.8 5H5.2C4.0799 5 3.51984 5 3.09202 5.21799C2.7157 5.40973 2.40973 5.71569 2.21799 6.09202C2 6.51984 2 7.0799 2 8.2V15.8C2 16.9201 2 17.4802 2.21799 17.908C2.40973 18.2843 2.71569 18.5903 3.09202 18.782C3.51984 19 4.07989 19 5.2 19H18.8C19.9201 19 20.4802 19 20.908 18.782C21.2843 18.5903 21.5903 18.2843 21.782 17.908C22 17.4802 22 16.9201 22 15.8V12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </div>
+                      <span className="font-medium">Card</span>
+                    </div>
+                    
+                    {paymentMethod === 'card' && (
+                      <div className="mt-4 space-y-4">
+                        {/* Card Number */}
+                        <div className="relative">
+                          <FormField
+                            control={form.control}
+                            name="cardNumber"
+                            render={({ field }) => (
+                              <FormItem>
                                 <Input
-                                  placeholder="1234 1234 1234 1234"
+                                  placeholder="Card number"
                                   {...field}
                                   onChange={e => {
-                                    // Format as ATM card number: 1234 5678 9012 3456
-                                    let value = e.target.value.replace(/\D/g, '').slice(0, 16);
-                                    value = value.replace(/(.{4})/g, '$1 ').trim();
-                                    field.onChange(value);
+                                    const value = e.target.value.replace(/\D/g, '').slice(0, 16);
+                                    field.onChange(value.replace(/(.{4})/g, '$1 ').trim());
                                   }}
                                   value={field.value}
                                   inputMode="numeric"
                                   maxLength={19}
+                                  className="h-12  border-gray-300"
                                 />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                                
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <div className="absolute right-3 top-3 flex items-center gap-1">
+                            <Image src="/visa.svg" alt="Visa" width={24} height={16} className='dark:text-white' />
+                            <Image src="/mastercard.svg" alt="Mastercard" width={24} height={16} className='dark:invert' />
+                            <Image src="/amex.svg" alt="American Express" width={24} height={16} className='dark:invert' />
+                          </div>
+                        </div>
+                        
+                        {/* Expiration Date and Security Code */}
                         <div className="grid grid-cols-2 gap-4">
                           <FormField
                             control={form.control}
                             name="expirationDate"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Expiration date</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder="MM/YY"
-                                    {...field}
-                                    onChange={e => {
-                                      // Format as MM/YY and restrict month to 12
-                                      let value = e.target.value.replace(/[^\d]/g, '').slice(0, 4);
-                                      let month = value.slice(0, 2);
-                                      if (month.length === 2) {
-                                        let monthNum = parseInt(month, 10);
-                                        if (monthNum > 12) {
-                                          month = '12';
-                                          value = month + value.slice(2);
-                                        } else if (monthNum === 0) {
-                                          month = '01';
-                                          value = month + value.slice(2);
-                                        }
+                                <Input
+                                  placeholder="MM/YY"
+                                  {...field}
+                                  onChange={e => {
+                                    let value = e.target.value.replace(/[^\d]/g, '').slice(0, 4);
+                                    let month = value.slice(0, 2);
+                                    if (month.length === 2) {
+                                      const monthNum = parseInt(month, 10);
+                                      if (monthNum > 12) {
+                                        month = '12';
+                                        value = month + value.slice(2);
+                                      } else if (monthNum === 0) {
+                                        month = '01';
+                                        value = month + value.slice(2);
                                       }
-                                      if (value.length >= 3) {
-                                        value = value.slice(0, 2) + '/' + value.slice(2);
-                                      }
-                                      field.onChange(value);
-                                    }}
-                                    value={field.value}
-                                    inputMode="numeric"
-                                    maxLength={5}
-                                  />
-                                </FormControl>
+                                    }
+                                    if (value.length >= 3) {
+                                      value = value.slice(0, 2) + '/' + value.slice(2);
+                                    }
+                                    field.onChange(value);
+                                  }}
+                                  value={field.value}
+                                  inputMode="numeric"
+                                  maxLength={5}
+                                  className="h-12 border-gray-300"
+                                />
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
-                          <FormField
-                            control={form.control}
-                            name="securityCode"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Security code</FormLabel>
-                                <FormControl>
-                                  <Input 
-                                    placeholder="123" 
+                          <div className='relative'>
+                            <FormField
+                              control={form.control}
+                              name="securityCode"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <Input
+                                    placeholder="Security code"
                                     {...field}
+                                    onChange={e => {
+                                      const value = e.target.value.replace(/\D/g, '').slice(0, 4);
+                                      field.onChange(value);
+                                    }}
                                     value={field.value}
                                     inputMode="numeric"
                                     maxLength={4}
-                                    onChange={e => {
-                                      // Restrict to 3 digits
-                                      let value = e.target.value.replace(/\D/g, '').slice(0, 4);
-                                      field.onChange(value);
-                                    }}
+                                    className="h-12 border-gray-300"
                                   />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                                  
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <div className="absolute right-3 top-3.5">
+                              <svg width="24" height="16" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="0.5" y="0.5" width="23" height="15" rx="1.5" fill="white" stroke="#E5E7EB" />
+                                <text x="12" y="10" textAnchor="middle" fontSize="8" fill="#6B7280">123</text>
+                              </svg>
+                            </div>
+                          </div>
+                            
                         </div>
                       </div>
-                    </div>
-                    <div className="grid gap-4">
-                      <FormField
-                        control={form.control}
-                        name="firstName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>First name</FormLabel>
-                            <FormControl>
-                              <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <div className="grid grid-cols-2 gap-4">
-                        <FormField
-                          control={form.control}
-                          name="zipCode"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Zip code</FormLabel>
-                              <FormControl>
-                                <Input {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="country"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Country</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select country" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {countries.map((country) => (
-                                    <SelectItem key={country.value} value={country.value}>
-                                      {country.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                    )}
+                  </div>
+                  
+                  {/* PayPal Option */}
+                  <div 
+                    className={`border rounded-lg p-4 ${paymentMethod === 'paypal' ? 'border-blue-500' : 'border-gray-200'}`}
+                    onClick={() => handlePaymentMethodChange('paypal')}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 flex items-center justify-center text-[#003087]">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 48 48">
+                          <path fill="#001C64" d="M37.972 13.82c.107-5.565-4.485-9.837-10.799-9.837H14.115a1.278 1.278 0 0 0-1.262 1.079L7.62 37.758a1.038 1.038 0 0 0 1.025 1.2h7.737l-1.21 7.572a1.038 1.038 0 0 0 1.026 1.2H22.5c.305 0 .576-.11.807-.307.231-.198.269-.471.316-.772l1.85-10.885c.047-.3.2-.69.432-.888.231-.198.433-.306.737-.307H30.5c6.183 0 11.43-4.394 12.389-10.507.678-4.34-1.182-8.287-4.916-10.244Z"/>
+                          <path fill="#0070E0" d="m18.056 26.9-1.927 12.22-1.21 7.664a1.038 1.038 0 0 0 1.026 1.2h6.67a1.278 1.278 0 0 0 1.261-1.079l1.758-11.14a1.277 1.277 0 0 1 1.261-1.078h3.927c6.183 0 11.429-4.51 12.388-10.623.68-4.339-1.504-8.286-5.238-10.244-.01.462-.05.923-.121 1.38-.959 6.112-6.206 10.623-12.389 10.623h-6.145a1.277 1.277 0 0 0-1.261 1.077Z"/>
+                          <path fill="#003087" d="M16.128 39.12h-7.76a1.037 1.037 0 0 1-1.025-1.2l5.232-33.182a1.277 1.277 0 0 1 1.262-1.078h13.337c6.313 0 10.905 4.595 10.798 10.16-1.571-.824-3.417-1.295-5.44-1.295H21.413a1.278 1.278 0 0 0-1.261 1.078L18.057 26.9l-1.93 12.22Z"/>
+                        </svg>
                       </div>
+                      <span className="font-medium">PayPal</span>
                     </div>
+                  </div>
+                </div>
+                
+                {/* Personal Information */}
+                <div className="space-y-4">
+                  {/* First Name */}
+                  <FormField
+                    control={form.control}
+                    name="firstName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="text-xs text-gray-500 mb-1">First name</div>
+                        <Input 
+                          placeholder="First name" 
+                          {...field} 
+                          className="h-12 border-gray-300"
+                        />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  {/* Zip Code and Country */}
+                  <div className="grid grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
-                      name="isBusinessPurchase"
+                      name="zipCode"
                       render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <div className="space-y-1 leading-none">
-                            <FormLabel>
-                              I am purchasing for a business
-                            </FormLabel>
-                          </div>
+                        <FormItem>
+                          <Input 
+                            placeholder="Zip code" 
+                            {...field} 
+                            className="h-12 border-gray-300"
+                          />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="country"
+                      render={({ field }) => (
+                        <FormItem>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="h-12 border-gray-300">
+                                <SelectValue placeholder="Country" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {countries.map((country) => (
+                                <SelectItem key={country.value} value={country.value}>
+                                  {country.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
-                  <Button type="submit" className="w-full">Purchase WeTransfer Ultimate</Button>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
-        </div>
-        <div>
-          <Card>
-            <CardHeader>
-              <CardTitle>Your plan</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-bold text-xl">WeTransfer Ultimate</h3>
-                  <p className="text-sm text-muted-foreground">arman's workspace</p>
+                  
+                  {/* Business Purchase Checkbox */}
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="business" 
+                        checked={isBusinessPurchase}
+                        onCheckedChange={handleBusinessPurchaseChange}
+                      />
+                      <label
+                        htmlFor="business"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        I am purchasing for a business
+                      </label>
+                    </div>
+                  </div>
+                  
+                  {/* Business Information (conditional) */}
+                  {isBusinessPurchase && (
+                    <div className="space-y-4">
+                      <FormField
+                        control={form.control}
+                        name="companyName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <Input 
+                              placeholder="Company name" 
+                              {...field} 
+                              className="h-12 border-gray-300"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="address"
+                        render={({ field }) => (
+                          <FormItem>
+                            <Input 
+                              placeholder="Address" 
+                              {...field} 
+                              className="h-12 border-gray-300"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="city"
+                        render={({ field }) => (
+                          <FormItem>
+                            <Input 
+                              placeholder="City" 
+                              {...field} 
+                              className="h-12 border-gray-300"
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
                 </div>
-                <div className="space-y-1">
-                  <div className="flex justify-between">
-                    <span>Billing cycle</span>
-                    <Select defaultValue="monthly">
-                      <SelectTrigger className="w-[120px]">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="monthly">Monthly</SelectItem>
-                        <SelectItem value="yearly">Yearly</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex justify-between items-baseline">
-                    <span>$23 x 1 month</span>
-                    <span className="text-xl font-bold">$23</span>
-                  </div>
+                
+                {/* Terms and Conditions */}
+                <div className="space-y-4">
+                  <ul className="list-disc pl-5 space-y-2 text-sm text-gray-600">
+                    <li>
+                      By purchasing a plan you agree that you have read, understand and agree to
+                      be bound by the <a href="#" className="text-blue-600">WeTransfer Terms of Service</a> and <a href="#" className="text-blue-600">Privacy Statement</a>.
+                    </li>
+                    <li>
+                      After the first {billingCycle === 'monthly' ? 'month' : 'year'}, your subscription will renew and your payment method
+                      will be charged usd {planPrice} unless you cancel. You can cancel anytime through
+                      your account settings.
+                    </li>
+                  </ul>
                 </div>
-                <div className="pt-4 border-t">
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold">Today's total</span>
-                    <span className="text-xl font-bold">$23</span>
-                  </div>
-                  <div className="mt-2 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                    <p className="text-sm text-purple-600 dark:text-purple-400">
-                      Save 17% by switching to yearly billing
-                    </p>
-                  </div>
+                
+                {/* Submit Button */}
+                
+                <Button 
+                  className="w-full" 
+                  variant={"default"} 
+                  size="lg"
+                  type="submit"
+                >
+                  Purchase {planName}
+                </Button>
+              </form>
+            </Form>
+          </div>
+          
+          {/* Right Column - Plan Summary */}
+          <div className="border rounded-lg p-6 space-y-6 h-fit">
+            <div>
+              <div className="text-sm text-gray-500 mb-1">Your plan</div>
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold">{planName}</h2>
+                <button className="text-gray-400">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </button>
+              </div>
+              <div className="text-gray-600 mt-1">arman&apos;s workspace</div>
+            </div>
+            
+            <div className="border-t pt-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-gray-600">Billing cycle</div>
+                <div className="flex items-center">
+                  <span className="font-medium mr-1">{billingCycle === 'monthly' ? 'Monthly' : 'Yearly'}</span>
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+              
+              <div className="flex items-center justify-between">
+                <div className="text-gray-600">${planPrice} x {billingCycle === 'monthly' ? '1 month' : '12 months'}</div>
+                <div className="font-bold">${billingCycle === 'monthly' ? planPrice : Number(planPrice) * 12}</div>
+              </div>
+              
+              {billingCycle === 'yearly' && (
+                <div className="flex items-center justify-between mt-2">
+                  <div className="text-gray-600">17% off yearly</div>
+                  <div className="font-bold text-green-600">- ${Math.round(Number(planPrice) * 12 * 0.17)}</div>
+                </div>
+              )}
+            </div>
+            
+            <div className="border-t pt-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-gray-600">Promo code</div>
+                <button className="text-blue-600 text-sm font-medium">Add</button>
+              </div>
+            </div>
+            
+            <div className="border-t pt-4">
+              <div className="flex items-center justify-between">
+                <div className="font-semibold">Today&apos;s total</div>
+                <div className="text-xl font-bold">${billingCycle === 'monthly' 
+                  ? planPrice 
+                  : Math.round(Number(planPrice) * 12 * 0.83)}</div>
+              </div>
+              
+              {billingCycle === 'monthly' && (
+                <div className="mt-4 bg-purple-50 p-3 rounded-lg">
+                  <p className="text-sm text-purple-700 flex items-center">
+                    <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" />
+                    </svg>
+                    Save 17% by switching to yearly billing
+                  </p>
+                </div>
+              )}
+              
+              {billingCycle === 'yearly' && (
+                <div className="text-sm text-gray-600 mt-2">
+                  You'll pay the first seat. You can add members later.
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

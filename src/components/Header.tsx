@@ -5,53 +5,105 @@ import Image from 'next/image';
 import { ThemeToggle } from './ThemeToggle';
 import { useNavigation } from '@/context/NavigationContext';
 import { ProfileDropdown } from './ProfileDropdown';
+import { cn } from '@/lib/utils';
+import React from 'react';
 
-export const Header = () => {
-  const { activePage, setActivePage } = useNavigation();
+interface HeaderProps {
+  showBackButton?: boolean;
+  onBack?: () => void;
+  title?: string;
+}
+
+export function Header({ showBackButton, onBack, title }: HeaderProps) {
+  // Make useNavigation optional to handle cases when Header is used outside NavigationProvider
+  const navigation = { activePage: '', setActivePage: (_: string) => { /* empty function */ } };
+  try {
+    const nav = useNavigation();
+    if (nav) {
+      navigation.activePage = nav.activePage;
+      navigation.setActivePage = nav.setActivePage;
+    }
+  } catch {
+    // NavigationProvider not available, use default values
+    console.log('Navigation context not available');
+  }
+  
   return (
-    <> 
-      <header className="w-full px-6 py-4 flex items-center justify-between bg-white dark:bg-gray-800 transition-colors duration-300">
-        <div className="flex items-center gap-8">
-          <Link href="/" className="text-2xl font-bold">
-            <Image
-              src="https://assets.multilat.xyz/branding/logos/multilat-logo-light.svg" 
-              alt="Logo"    
-              width={200}
-              height={200}
-            />
-          </Link>
-          <nav className="flex gap-6">
-            {[
-              { id: 'upload-form', name: 'Upload Form' },
-              { id: 'transfers', name: 'Transfers' },
-              { id: 'pricing', name: 'Pricing' },
-              { id: 'reviews', name: 'Reviews' },
-              { id: 'branding', name: 'Branding' },
-              { id: 'history', name: 'History' },
-            ].map((item) => (
+    <>
+      <header className="border-b">
+        <div className="flex items-center justify-between h-16 px-4">
+          <div className="flex items-center space-x-4">
+            {showBackButton && (
               <button
-                key={item.id}
-                onClick={() => setActivePage(item.id)}
-                className={`text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 transition-colors ${activePage === item.id ? 'font-semibold text-primary-600 dark:text-primary-400' : ''}`}
+                onClick={onBack}
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
               >
-                {item.name}
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
               </button>
-            ))}
-          </nav>
-        </div>
-        <div className="flex items-center gap-4">
-          <ThemeToggle />
-          <Link href="/upgrade" className="text-purple-600 font-medium dark:text-purple-400">
-            Upgrade
-          </Link>
-          <ProfileDropdown />
+            )}
+            <Link href="/">
+              <Image
+                src="https://assets.multilat.xyz/branding/logos/multilat-logo.svg"
+                alt="Logo"    
+                width={96}
+                height={32}
+                className=" dark:invert"
+              />
+            </Link>
+            {showBackButton && (
+              title && <h1 className="text-xl font-semibold">{title}</h1>
+              )}
+          </div>
+          {!showBackButton && (
+            <nav className="hidden md:flex gap-6">
+              {[
+                { id: 'upload-form', name: 'Upload Form' },
+                { id: 'transfers', name: 'Transfers' },
+                { id: 'history', name: 'History' },
+                { id: 'pricing', name: 'Pricing' },
+                { id: 'branding', name: 'Branding' },
+                { id: 'reviews', name: 'Reviews' },
+              ].map(({ id, name }) => (
+                <button
+                  key={id}
+                  className={cn(
+                    'text-sm font-medium transition-colors hover:text-primary',
+                    navigation.activePage === id
+                      ? 'text-black dark:text-white'
+                      : 'text-muted-foreground'
+                  )}
+                  onClick={() => navigation.setActivePage(id)}
+                >
+                  {name}
+                </button>
+              ))}
+            </nav>
+          )}
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <Link href="/upgrade" className="text-purple-600 font-medium dark:text-purple-400">
+              Upgrade
+            </Link>
+            <ProfileDropdown />
+          </div>
         </div>
       </header>
-
+    </>
       
       
-     </>
-    
-
+      
   );
 };

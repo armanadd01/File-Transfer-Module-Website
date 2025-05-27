@@ -1,10 +1,10 @@
 import React from 'react';
 import { TransferUploadForm } from './forms/TransferUploadForm';
-import PricingPage from '@/app/child-pages/pricing/page';
 import ReviewsPage from '@/app/child-pages/reviews/page';
 import BrandingPage from '@/app/child-pages/branding/page';
 import TransfersPage from '@/app/child-pages/transfers/page';
 import { useNavigation } from '@/context/NavigationContext';
+import PlansPage from '@/app/child-pages/plans/page';
 
 const ChildPages = () => {
   const { activePage } = useNavigation();
@@ -16,7 +16,7 @@ const ChildPages = () => {
       case 'transfers':
         return <TransfersPage />;
       case 'pricing':
-        return <PricingPage />;
+        return <PlansPage />;
       case 'reviews':
         return <ReviewsPage />;
       case 'branding':
@@ -28,7 +28,7 @@ const ChildPages = () => {
 
   return (
     <div className="flex-1 border-t border-gray-200 dark:border-gray-700">
-      <div className="p-6">
+      <div className="">
         {renderContent()}
       </div>
     </div>

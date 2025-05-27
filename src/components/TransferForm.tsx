@@ -9,7 +9,7 @@ export const TransferForm = () => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 w-[400px] shadow-lg transition-colors duration-150">
+    <div className="bg-white dark:bg-gray-800 rounded-xl w-[400px] shadow-lg transition-colors duration-150">
       <div className="flex gap-4 mb-6">
         <button 
           onClick={handleAddFiles}
