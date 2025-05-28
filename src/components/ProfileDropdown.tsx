@@ -3,10 +3,23 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { useNavigation } from "@/context/NavigationContext";
 
 export function ProfileDropdown() {
   const router = useRouter();
-  const user = { name: "Arman Habib", avatar: "/avatar-placeholder.svg" };
+  const user = { name: "Arman Habib", avatar: "/avater-01.webp" };
+  const navigation = { activePage: '', setActivePage: (page: string) => {} };
+    try {
+      const nav = useNavigation();
+      if (nav) {
+        navigation.activePage = nav.activePage;
+        navigation.setActivePage = nav.setActivePage;
+      }
+    } catch {
+      // NavigationProvider not available, use default values
+      console.log('Navigation context not available');
+    }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -26,13 +39,13 @@ export function ProfileDropdown() {
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push('/account')}>
+        <DropdownMenuItem onClick={() => navigation.setActivePage('account')}>
           Account Settings
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push('/plans')}>
+        <DropdownMenuItem onClick={() => navigation.setActivePage('pricing')}>
           Plans & Pricing
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push('/integrations')}>
+        <DropdownMenuItem onClick={() => navigation.setActivePage('integrations')}>
           Integrations
         </DropdownMenuItem>
         <DropdownMenuSeparator />

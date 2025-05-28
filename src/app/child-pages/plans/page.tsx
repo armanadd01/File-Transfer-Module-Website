@@ -3,7 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 const plans = [
@@ -62,7 +62,7 @@ export default function PlansPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold">Plans & Pricing</h1>
@@ -81,8 +81,8 @@ export default function PlansPage() {
                     <CardDescription className="mt-2">{plan.description}</CardDescription>
                   </div>
                   {plan.current && (
-                    <Badge variant="outline" className="bg-primary/10 text-primary border-0">
-                      Current Plan
+                    <Badge variant="destructive" className="text-white bg-red-500 dark:bg-red-700 border-0">
+                      Current
                     </Badge>
                   )}
                 </div>
@@ -113,7 +113,10 @@ export default function PlansPage() {
                     </li>
                   ))}
                 </ul>
-                <div className="mt-6">
+                
+              </CardContent>
+              <CardFooter>
+                <div className="mt-6 w-full">
                   {plan.current ? (
                     <Button className="w-full" variant="outline" disabled>
                       Current Plan
@@ -127,7 +130,7 @@ export default function PlansPage() {
                     </Button>
                   )}
                 </div>
-              </CardContent>
+              </CardFooter>
             </Card>
           ))}
         </div>

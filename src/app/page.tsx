@@ -15,7 +15,7 @@ export default function Home() {
         <ResizablePanelGroup direction="horizontal" >
           <ResizablePanel defaultSize={45} className="sidebar-area">
                 <Header title="Dashboard" />
-            <div>
+            <div className="flex-1 border-t border-gray-200 dark:border-gray-700">
               <ChildPages />
             </div>
           </ResizablePanel>

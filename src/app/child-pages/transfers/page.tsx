@@ -10,13 +10,13 @@ export default function TransfersPage() {
 
 
   return (
-    <div className="p-8 bg-white dark:bg-gray-800 min-h-screen pt-[5vh] transition-colors duration-300">
+    <div className="pt-[5vh] transition-colors duration-300">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Transfers</h1>
-        <p className="text-gray-600 dark:text-gray-400 mb-8">Check the download status or edit, forward or delete them</p>
+        <h1 className="text-center text-3xl font-bold mb-2 text-gray-900 dark:text-white">Transfers</h1>
+        <p className="text-center text-gray-600 dark:text-gray-400 mb-8">Check the download status or edit, forward or delete them</p>
         
-        <Tabs defaultValue="sent" className="mb-8">
-          <TabsList className="grid w-full grid-cols-3 max-w-[400px]">
+        <Tabs defaultValue="sent" className="mb-8 ">
+          <TabsList className="grid w-full grid-cols-3 mb-3 max-w-[400px]">
             <TabsTrigger value="sent">Sent</TabsTrigger>
             <TabsTrigger value="requested">Requested</TabsTrigger>
             <TabsTrigger value="received">Received</TabsTrigger>

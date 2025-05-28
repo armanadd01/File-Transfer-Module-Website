@@ -8,12 +8,13 @@ import { Label } from "@/components/ui/label";
 
 export default function BrandingPage() {
   return (
-    <div className="p-8 bg-white dark:bg-gray-800 pt-[5vh] min-h-screen transition-colors duration-300">
+    <div className="pt-[5vh] transition-colors duration-300">
       <div className="max-w-6xl mx-auto">
-        <div className="mb-12">
-          <h1 className="text-3xl font-bold mb-2">Brand</h1>
+        <div className="mb-12 relative">
+          <h1 className="text-3xl font-bold mb-2">Personalize Your Brand</h1>
+          <Badge variant="secondary" className='absolute top-2 left-85 text-white bg-red-500 dark:bg-red-700'>Free plan</Badge>
           <div className="flex items-center gap-4">
-            <Badge variant="secondary">Free plan</Badge>
+            
             <Button>Upgrade</Button>
           </div>
         </div>

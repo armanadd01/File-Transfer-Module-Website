@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Header } from '@/components/Header';
 
 const formSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -26,6 +27,9 @@ export default function LoginPage() {
       password: '',
     },
   });
+  const handleBack = () => {
+    router.back();
+  };
 
   const onSubmit = async (data: FormValues) => {
     // Here you would typically make an API call to authenticate
@@ -35,6 +39,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+      <Header showBackButton onBack={handleBack} title="Login to your account" />
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">Sign in</CardTitle>

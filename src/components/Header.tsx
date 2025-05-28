@@ -61,7 +61,7 @@ export function Header({ showBackButton, onBack, title }: HeaderProps) {
                 alt="Logo"    
                 width={96}
                 height={32}
-                className=" dark:invert"
+                // className=" dark:invert"
               />
             </Link>
             {showBackButton && (
@@ -95,9 +95,11 @@ export function Header({ showBackButton, onBack, title }: HeaderProps) {
           )}
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            <Link href="/upgrade" className="text-purple-600 font-medium dark:text-purple-400">
-              Upgrade
-            </Link>
+            {/* <Link href="/upload" className="hidden md:block">
+              <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                Upload
+              </button>
+            </Link> */}
             <ProfileDropdown />
           </div>
         </div>

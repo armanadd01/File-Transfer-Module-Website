@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 export default function HistoryPage() {
   return (
-    <div className="p-8 bg-white dark:bg-gray-800 min-h-screen pt-[5vh] transition-colors duration-300">
+    <div className=" pt-[5vh] transition-colors duration-300">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Transfer History</h1>

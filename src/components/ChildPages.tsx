@@ -6,6 +6,8 @@ import TransfersPage from '@/app/child-pages/transfers/page';
 import { useNavigation } from '@/context/NavigationContext';
 import PlansPage from '@/app/child-pages/plans/page';
 import HistoryPage from '@/app/child-pages/history/page';
+import AccountPage from '@/app/account/page';
+import IntegrationsPage from '@/app/integrations/page';
 
 const ChildPages = () => {
   const { activePage } = useNavigation();
@@ -24,6 +26,10 @@ const ChildPages = () => {
         return <ReviewsPage />;
       case 'branding':
         return <BrandingPage />;
+      case 'account':
+        return <AccountPage />;
+      case 'integrations':
+        return <IntegrationsPage />;
       default:
         return <TransferUploadForm />;
     }
