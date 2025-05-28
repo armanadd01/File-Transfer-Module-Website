@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { fetchReviews } from '@/lib/api';
 import { Review } from '@/types';
 import { DataPagination } from '@/components/ui/data-pagination';
+import { CreateReviewDialog } from '@/components/dialogs/create-review-dialog';
 
 export default function ReviewsPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -16,6 +17,7 @@ export default function ReviewsPage() {
   const [totalItems, setTotalItems] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCreateReviewDialogOpen, setIsCreateReviewDialogOpen] = useState(false);
   const itemsPerPage = 8;
   
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,6 +27,18 @@ export default function ReviewsPage() {
   
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+  };
+  
+  const handleCreateReview = () => {
+    setIsCreateReviewDialogOpen(true);
+  };
+  
+  const handleSaveReview = (newReview: Partial<Review>) => {
+    // In a real app, this would call an API to create the review
+    // For now, we'll just update the local state
+    setReviewsData([newReview as Review, ...reviewsData]);
+    setTotalItems(totalItems + 1);
+    setIsCreateReviewDialogOpen(false);
   };
   
   const getStatusBadgeClass = (status: string) => {
@@ -196,7 +210,7 @@ export default function ReviewsPage() {
           )}
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            <Card className="hover:border-primary/50 cursor-pointer transition-colors">
+            <Card className="hover:border-primary/50 cursor-pointer transition-colors" onClick={handleCreateReview}>
               <CardContent className="pt-6 text-center">
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -208,6 +222,13 @@ export default function ReviewsPage() {
               </CardContent>
             </Card>
           </div>
+          
+          {/* Create Review Dialog */}
+          <CreateReviewDialog
+            isOpen={isCreateReviewDialogOpen}
+            onClose={() => setIsCreateReviewDialogOpen(false)}
+            onSave={handleSaveReview}
+          />
         </div>
       </div>
     </div>

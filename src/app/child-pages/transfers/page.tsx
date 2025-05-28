@@ -11,6 +11,10 @@ import { Button } from "@/components/ui/Button";
 import { fetchSentTransfers, fetchReceivedTransfers, formatFileSize } from '@/lib/api';
 import { Transfer } from '@/types';
 import { DataPagination } from '@/components/ui/data-pagination';
+import { EditTransferDialog } from '@/components/dialogs/edit-transfer-dialog';
+import { DeleteConfirmationDialog } from '@/components/dialogs/delete-confirmation-dialog';
+import { ViewTransferDialog } from '@/components/dialogs/view-transfer-dialog';
+import { ForwardTransferDialog } from '@/components/dialogs/forward-transfer-dialog';
 
 export default function TransfersPage() {
   const [activeTab, setActiveTab] = useState('sent');
@@ -22,6 +26,13 @@ export default function TransfersPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const itemsPerPage = 10;
+  
+  // Dialog states
+  const [selectedTransfer, setSelectedTransfer] = useState<Transfer | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [isForwardDialogOpen, setIsForwardDialogOpen] = useState(false);
   
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -35,6 +46,58 @@ export default function TransfersPage() {
   
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+  };
+  
+  // Dialog handlers
+  const handleEditTransfer = (transfer: Transfer) => {
+    setSelectedTransfer(transfer);
+    setIsEditDialogOpen(true);
+  };
+  
+  const handleDeleteTransfer = (transfer: Transfer) => {
+    setSelectedTransfer(transfer);
+    setIsDeleteDialogOpen(true);
+  };
+  
+  const handleViewTransfer = (transfer: Transfer) => {
+    setSelectedTransfer(transfer);
+    setIsViewDialogOpen(true);
+  };
+  
+  const handleForwardTransfer = (transfer: Transfer) => {
+    setSelectedTransfer(transfer);
+    setIsForwardDialogOpen(true);
+  };
+  
+  const handleSaveTransfer = (updatedTransfer: Partial<Transfer>) => {
+    // In a real app, this would call an API to update the transfer
+    // For now, we'll just update the local state
+    if (activeTab === 'sent') {
+      setSentData(sentData.map(t => t.id === updatedTransfer.id ? { ...t, ...updatedTransfer } as Transfer : t));
+    } else if (activeTab === 'received') {
+      setReceivedData(receivedData.map(t => t.id === updatedTransfer.id ? { ...t, ...updatedTransfer } as Transfer : t));
+    }
+    setIsEditDialogOpen(false);
+  };
+  
+  const handleConfirmDelete = () => {
+    // In a real app, this would call an API to delete the transfer
+    // For now, we'll just update the local state
+    if (activeTab === 'sent' && selectedTransfer) {
+      setSentData(sentData.filter(t => t.id !== selectedTransfer.id));
+      setSentTotal(sentTotal - 1);
+    } else if (activeTab === 'received' && selectedTransfer) {
+      setReceivedData(receivedData.filter(t => t.id !== selectedTransfer.id));
+      setReceivedTotal(receivedTotal - 1);
+    }
+    setIsDeleteDialogOpen(false);
+  };
+  
+  const handleForward = (emails: string[], message: string) => {
+    // In a real app, this would call an API to forward the transfer
+    console.log(`Forwarding transfer to: ${emails.join(', ')}
+Message: ${message}`);
+    setIsForwardDialogOpen(false);
   };
   
   const getStatusColor = (status: Transfer['status']) => {
@@ -165,8 +228,9 @@ export default function TransfersPage() {
                               </TableCell>
                               <TableCell>
                                 <div className="flex space-x-2">
-                                  <Button variant="outline" size="sm">Edit</Button>
-                                  <Button variant="outline" size="sm">Delete</Button>
+                                  <Button variant="outline" size="sm" onClick={() => handleViewTransfer(transfer)}>View</Button>
+                                  <Button variant="outline" size="sm" onClick={() => handleEditTransfer(transfer)}>Edit</Button>
+                                  <Button variant="outline" size="sm" onClick={() => handleDeleteTransfer(transfer)}>Delete</Button>
                                 </div>
                               </TableCell>
                             </TableRow>
@@ -239,8 +303,10 @@ export default function TransfersPage() {
                               </TableCell>
                               <TableCell>
                                 <div className="flex space-x-2">
+                                  <Button variant="outline" size="sm" onClick={() => handleViewTransfer(transfer)}>View</Button>
                                   <Button variant="outline" size="sm">Download</Button>
-                                  <Button variant="outline" size="sm">Forward</Button>
+                                  <Button variant="outline" size="sm" onClick={() => handleForwardTransfer(transfer)}>Forward</Button>
+                                  <Button variant="outline" size="sm" onClick={() => handleDeleteTransfer(transfer)}>Delete</Button>
                                 </div>
                               </TableCell>
                             </TableRow>
@@ -266,6 +332,36 @@ export default function TransfersPage() {
           </TabsContent>
         </Tabs>
       </div>
+      
+      {/* Dialog Components */}
+      <EditTransferDialog
+        isOpen={isEditDialogOpen}
+        onClose={() => setIsEditDialogOpen(false)}
+        transfer={selectedTransfer}
+        onSave={handleSaveTransfer}
+      />
+      
+      <DeleteConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Transfer"
+        description="Are you sure you want to delete this transfer?"
+        itemName={selectedTransfer?.title || ""}
+      />
+      
+      <ViewTransferDialog
+        isOpen={isViewDialogOpen}
+        onClose={() => setIsViewDialogOpen(false)}
+        transfer={selectedTransfer}
+      />
+      
+      <ForwardTransferDialog
+        isOpen={isForwardDialogOpen}
+        onClose={() => setIsForwardDialogOpen(false)}
+        transfer={selectedTransfer}
+        onForward={handleForward}
+      />
     </div>
   );
 }
