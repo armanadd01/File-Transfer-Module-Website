@@ -8,6 +8,8 @@ import { useNavigation } from "@/context/NavigationContext";
 export function ProfileDropdown() {
   const router = useRouter();
   const user = { name: "Arman Habib", avatar: "/avater-01.webp" };
+  // Make useNavigation optional to handle cases when ProfileDropdown is used outside NavigationProvider
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const navigation = { activePage: '', setActivePage: (page: string) => {} };
     try {
       const nav = useNavigation();

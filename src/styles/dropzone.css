@@ -1,250 +1,99 @@
+/* Custom Dropzone Theme */
 .dropzone {
   min-height: 100vh;
-  width: 100%;
-  position: relative;
-  transition: all 0.3s ease;
+  transition: border-color 0.3s;
+  overflow: hidden;
   overflow-y: scroll;
-  max-height: 100vh;
+  display: grid;
+  /* grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); */
 }
-
 .dropzone.dz-drag-hover {
-  opacity: 0.9;
+  border-color: #1e40af;
+  background: #dbeafe;
+  
 }
-
 .dropzone .dz-message {
-  text-align: center;
-}
-
-:root[class~="dark"] .dropzone .dz-message h3 {
-  color: #f3f4f6;
-}
-
-.dropzone .dz-message h3 {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #1f2937;
-  transition: color 0.3s ease;
-}
-
-:root[class~="dark"] .dropzone .dz-message p {
-  color: #9ca3af;
-}
-
-.dropzone .dz-message p {
-  color: #4b5563;
-  margin-bottom: 5px;
-  transition: color 0.3s ease;
-}
-
-:root[class~="dark"] .dropzone .dz-message p.note {
-  color: #6b7280;
-}
-
-.dropzone .dz-message p.note {
-  font-size: 14px;
-  color: #6b7280;
-  transition: color 0.3s ease;
-}
-
-.dropzone .dz-message p.note strong {
+  color: #1e40af;
+  font-size: 1.3rem;
   font-weight: 600;
-}
-
-/* Preview container */
-:root[class~="dark"] .dropzone .dz-preview {
-  background: #1f2937;
-}
-
-.dropzone .dz-preview {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1;
-  background: #f3f4f6;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  display: block;
-  transition: background-color 0.3s ease;
-}
-
-/* File preview */
-:root[class~="dark"] .dropzone .dz-preview .dz-image {
-  background: #374151;
-}
-
-.dropzone .dz-preview .dz-image {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: #e5e7eb;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  transition: background-color 0.3s ease;
-}
-
-.dropzone .dz-preview .dz-image img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: cover;
-}
-
-/* File details */
-:root[class~="dark"] .dropzone .dz-preview .dz-details {
-  background: rgba(0, 0, 0, 0.7);
-}
-
-.dropzone .dz-preview .dz-details {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  opacity: 0;
-  transition: all 0.3s ease;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 10px;
-  padding: 10px;
-  text-align: center;
-  color: white;
-  display: flex;
   flex-direction: column;
-  justify-content: center;
-  z-index: 20;
-}
-
-.dropzone .dz-preview:hover .dz-details {
-  opacity: 1;
-}
-
-.dropzone .dz-preview .dz-details .dz-size {
-  font-weight: bold;
-  font-size: 16px;
-  margin-bottom: 5px;
-}
-
-.dropzone .dz-preview .dz-details .dz-filename {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 14px;
-}
-
-/* Progress bar */
-:root[class~="dark"] .dropzone .dz-preview .dz-progress {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.dropzone .dz-preview .dz-progress {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 80%;
-  height: 26px;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 3px;
-  overflow: hidden;
-  opacity: 0;
-  transition: all 0.3s ease;
-}
-
-.dropzone .dz-preview.dz-processing .dz-progress {
-  opacity: 1;
-}
-
-:root[class~="dark"] .dropzone .dz-preview .dz-progress .dz-upload {
-  background: #3b82f6;
-}
-
-.dropzone .dz-preview .dz-progress .dz-upload {
-  display: block;
-  height: 100%;
-  width: 0;
-  background: #2563eb;
-  transition: all 0.3s ease;
-}
-
-/* Success and error marks */
-.dropzone .dz-preview .dz-success-mark,
-.dropzone .dz-preview .dz-error-mark {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: none;
-  z-index: 10;
-}
-
-.dropzone .dz-preview.dz-success .dz-success-mark {
-  display: block;
-}
-
-.dropzone .dz-preview.dz-error .dz-error-mark {
-  display: block;
-}
-
-:root[class~="dark"] .dropzone .dz-preview .dz-success-mark svg,
-:root[class~="dark"] .dropzone .dz-preview .dz-error-mark svg {
-  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
-}
-
-.dropzone .dz-preview .dz-success-mark svg,
-.dropzone .dz-preview .dz-error-mark svg {
-  width: 40px;
-  height: 40px;
-  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
-  transition: filter 0.3s ease;
-}
-
-/* Error message */
-:root[class~="dark"] .dropzone .dz-preview .dz-error-message {
-  background: #991b1b;
-}
-
-.dropzone .dz-preview .dz-error-message {
-  position: absolute;
-  top: 130px;
-  left: 0;
-  right: 0;
-  background: #dc2626;
-  color: white;
-  padding: 8px;
-  border-radius: 0 0 10px 10px;
-  text-align: center;
-  display: none;
-  transition: background-color 0.3s ease;
-}
-
-.dropzone .dz-preview.dz-error:hover .dz-error-message {
-  display: block;
+  cursor: pointer;
 }
 
 /* Grid layout for previews */
 .dropzone.dz-started {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 0.1fr));
+  /* display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
-  /* padding: 1rem; */
   align-items: start;
+  justify-items: start; */
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: start;
+  justify-content: flex-start;
+  align-content: flex-start;
+  gap: 2rem;
+  align-items: start;
+  justify-content: flex-start;
+}
+
+.dropzone .dz-preview {
+  background: transparent !important;
+  border-radius: 12px;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  max-width: 140px !important;
 
 }
 
-/* Remove button */
-:root[class~="dark"] .dropzone .dz-preview .dz-remove {
-  background: rgba(255, 255, 255, 0.1);
+.dropzone .dz-preview .dz-image {
+  min-width: 140px !important;
+  min-height: 140px !important;
+  max-width: 150px !important;
+  max-height: 150px !important;
+  overflow: hidden;
+}
+.dropzone .dz-preview .dz-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.dropzone .dz-preview .dz-remove {
+
+.dropzone .dz-success-mark svg,
+.dropzone .dz-error-mark svg {
+  width: 32px;
+  height: 32px;
+}
+.dropzone .dz-progress {
+  background: #dbeafe;
+  height: 8px;
+  border-radius: 4px;
+}
+.dropzone .dz-upload {
+  background: #4f8cff;
+  height: 8px;
+  border-radius: 4px;
+}
+.dropzone .dz-error-message {
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.dropzone .dz-preview .dz-remove{
   position: absolute;
   top: 10px;
   right: 10px;
   width: 24px;
   height: 24px;
-  background: rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  color: white;
+  background: rgba(241, 6, 6, 0.1);
+  backdrop-filter: blur(5px);
+  color: #ec6060;
   border-radius: 50%;
   text-align: center;
   line-height: 24px;
@@ -256,28 +105,12 @@
   text-decoration: none;
   transition: all 0.3s ease;
 }
-
-:root[class~="dark"] .dropzone .dz-preview .dz-remove:hover {
-  background: #dc2626;
+:root[class~="dark"] .dropzone .dz-preview .dz-remove {
+  background: rgba(241, 6, 6, 0.2);
+  color: #f87171;
 }
+
 
 .dropzone .dz-preview .dz-remove:hover {
-  background: #ef4444;
-}
-
-/* Multiple file layout */
-.dropzone.dz-started .dz-message {
-  display: none;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .dropzone .dz-preview {
-    margin: 5px;
-  }
-  
-  .dropzone .dz-preview .dz-image {
-    width: 100px;
-    height: 100px;
-  }
+  color: #b91c1c;
 }

@@ -38,7 +38,8 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(({
 
   // Track drag state for visual feedback
 
-  const { files, isUploading, progress, error } = state;
+  // const { files, isUploading, progress, error } = state;
+  const { files, error } = state;
 
   const handleFiles = (newFiles: File[]) => {
     setState((prev: FileUploadState) => ({
@@ -111,9 +112,10 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(({
       dictResponseError: 'Server responded with {{statusCode}} code',
       dictCancelUpload: 'Cancel upload',
       dictCancelUploadConfirmation: 'Are you sure you want to cancel this upload?',
-      dictRemoveFile: '<svg  viewBox="0 0 54 54"fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M26.2929 20.2929L19.2071 13.2071C18.8166 12.8166 18.1834 12.8166 17.7929 13.2071L13.2071 17.7929C12.8166 18.1834 12.8166 18.8166 13.2071 19.2071L20.2929 26.2929C20.6834 26.6834 20.6834 27.3166 20.2929 27.7071L13.2071 34.7929C12.8166 35.1834 12.8166 35.8166 13.2071 36.2071L17.7929 40.7929C18.1834 41.1834 18.8166 41.1834 19.2071 40.7929L26.2929 33.7071C26.6834 33.3166 27.3166 33.3166 27.7071 33.7071L34.7929 40.7929C35.1834 41.1834 35.8166 41.1834 36.2071 40.7929L40.7929 36.2071C41.1834 35.8166 41.1834 35.1834 40.7929 34.7929L33.7071 27.7071C33.3166 27.3166 33.3166 26.6834 33.7071 26.2929L40.7929 19.2071C41.1834 18.8166 41.1834 18.1834 40.7929 17.7929L36.2071 13.2071C35.8166 12.8166 35.1834 12.8166 34.7929 13.2071L27.7071 20.2929C27.3166 20.6834 26.6834 20.6834 26.2929 20.2929Z"/></svg>',
+      dictRemoveFile: '<svg  viewBox="0 0 54 54"fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M26.2929 20.2929L19.2071 13.2071C18.8166 12.8166 18.1834 12.8166 17.7929 13.2071L13.2071 17.7929C12.8166 18.1834 12.8166 18.8166 13.2071 19.2071L20.2929 26.2929C20.6834 26.6834 20.6834 27.3166 20.2929 27.7071L13.2071 34.7929C12.8166 35.1834 12.8166 35.8166 13.2071 36.2071L17.7929 40.7929C18.1834 41.1834 18.8166 41.1834 19.2071 40.7929L26.2929 33.7071C26.6834 33.3166 27.3166 33.3166 27.7071 33.7071L34.7929 40.7929C35.1834 41.1834 35.8166 41.1834 36.2071 40.7929L40.7929 36.2071C41.1834 35.8166 41.1834 35.1834 40.7929 34.7929L33.7071 27.7071C33.3166 27.3166 33.3166 26.6834 33.7071 26.2929L40.7929 19.2071C41.1834 18.8166 41.1834 18.1834 40.7929 17.7929L36.2071 13.2071C35.8166 12.8166 35.1834 12.8166 34.7929 13.2071L27.7071 20.2929C27.3166 20.6834 26.6834 20.6834 26.2929 20.2929Z"/></svg>',
       dictMaxFilesExceeded: 'You can only upload {{maxFiles}} files at a time',
-      dictDefaultMessage: '<div class="flex flex-col items-center justify-center gap-4"><svg xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" class="w-16 h-16 text-gray-400 dark:text-gray-600" width="256" height="256" fill="currentColor"><path d="M18.4,7.379a1.128,1.128,0,0,1-.769-.754h0a8,8,0,1,0-15.1,5.237A1.046,1.046,0,0,1,2.223,13.1,5.5,5.5,0,0,0,.057,18.3,5.622,5.622,0,0,0,5.683,23H11a1,1,0,0,0,1-1h0a1,1,0,0,0-1-1H5.683a3.614,3.614,0,0,1-3.646-2.981,3.456,3.456,0,0,1,1.376-3.313A3.021,3.021,0,0,0,4.4,11.141a6.113,6.113,0,0,1-.073-4.126A5.956,5.956,0,0,1,9.215,3.05,6.109,6.109,0,0,1,9.987,3a5.984,5.984,0,0,1,5.756,4.28,2.977,2.977,0,0,0,2.01,1.99,5.934,5.934,0,0,1,.778,11.09.976.976,0,0,0-.531.888h0a.988.988,0,0,0,1.388.915c4.134-1.987,6.38-7.214,2.88-12.264A6.935,6.935,0,0,0,18.4,7.379Z"/><path d="M18.707,16.707a1,1,0,0,0,0-1.414l-1.586-1.586a3,3,0,0,0-4.242,0l-1.586,1.586a1,1,0,0,0,1.414,1.414L14,15.414V23a1,1,0,0,0,2,0V15.414l1.293,1.293a1,1,0,0,0,1.414,0Z"/></svg><div class="text-lg text-center font-medium text-gray-900 dark:text-gray-100">Drop files to upload<div class="text-sm text-gray-500 dark:text-gray-400">or click to select files</div></div></div>'
+      dictDefaultMessage: '<div class="flex flex-col items-center justify-center gap-4"><svg xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" class="w-16 h-16 text-gray-400 dark:text-gray-600" width="256" height="256" fill="currentColor"><path d="M18.4,7.379a1.128,1.128,0,0,1-.769-.754h0a8,8,0,1,0-15.1,5.237A1.046,1.046,0,0,1,2.223,13.1,5.5,5.5,0,0,0,.057,18.3,5.622,5.622,0,0,0,5.683,23H11a1,1,0,0,0,1-1h0a1,1,0,0,0-1-1H5.683a3.614,3.614,0,0,1-3.646-2.981,3.456,3.456,0,0,1,1.376-3.313A3.021,3.021,0,0,0,4.4,11.141a6.113,6.113,0,0,1-.073-4.126A5.956,5.956,0,0,1,9.215,3.05,6.109,6.109,0,0,1,9.987,3a5.984,5.984,0,0,1,5.756,4.28,2.977,2.977,0,0,0,2.01,1.99,5.934,5.934,0,0,1,.778,11.09.976.976,0,0,0-.531.888h0a.988.988,0,0,0,1.388.915c4.134-1.987,6.38-7.214,2.88-12.264A6.935,6.935,0,0,0,18.4,7.379Z"/><path d="M18.707,16.707a1,1,0,0,0,0-1.414l-1.586-1.586a3,3,0,0,0-4.242,0l-1.586,1.586a1,1,0,0,0,1.414,1.414L14,15.414V23a1,1,0,0,0,2,0V15.414l1.293,1.293a1,1,0,0,0,1.414,0Z"/></svg><div class="text-lg text-center font-medium text-gray-900 dark:text-gray-100">Drop files to upload<div class="text-sm text-gray-500 dark:text-gray-400">or click to select files</div></div></div>',
+      // PreviewTemplate: '<div class="dz-preview dz-file-preview"><div class="dz-details" ></div></div>',
     });
 
     dropzone.on('addedfile', (file: DropzoneFile) => {
@@ -167,9 +169,9 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(({
     <div className={`w-full  ${className}`} {...props}>
       <Card
         id="upload-zone"
-        className="dropzone rounded-none relative flex flex-col items-center justify-center p-8 bg-gray-50 dark:bg-gray-800/50 dark:border-gray-700 transition-colors duration-150 ease-in-out hover:border-primary-500 dark:hover:border-primary-500 cursor-pointer"
+        className="dropzone !min-h-[100vh] !max-h-[100vh]"
       >
-        <AnimatePresence>
+        {/* <AnimatePresence>
           {files.length === 0 && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -177,11 +179,11 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(({
               exit={{ opacity: 0, y: -10 }}
               className="flex flex-col items-center gap-4"
             >
-              {/* The message is handled by Dropzone */}
+              The message is handled by Dropzone
               
             </motion.div>
           )}
-        </AnimatePresence>
+        </AnimatePresence> */}
 
         {/* <AnimatePresence>
           {files.length > 0 && (
@@ -271,7 +273,7 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(({
           )}
         </AnimatePresence> */}
 
-        {isUploading && (
+        {/* {isUploading && (
           <div className="mt-4">
             <div className="h-2 bg-gray-200 rounded-full">
               <div
@@ -280,7 +282,7 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(({
               />
             </div>
           </div>
-        )}
+        )} */}
       </Card>
 
       <AnimatePresence>
