@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ThemeToggle } from './ThemeToggle';
+import { ThemeColorSwitcher } from './ui/ThemeColorSwitcher';
 import { useNavigation } from '@/context/NavigationContext';
 import { ProfileDropdown } from './ProfileDropdown';
 import { cn } from '@/lib/utils';
@@ -94,6 +95,7 @@ export function Header({ showBackButton, onBack, title }: HeaderProps) {
             </nav>
           )}
           <div className="flex items-center gap-4">
+            <ThemeColorSwitcher />
             <ThemeToggle />
             {/* <Link href="/upload" className="hidden md:block">
               <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">

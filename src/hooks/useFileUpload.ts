@@ -1,6 +1,7 @@
 "use client";
 import { useState, useCallback } from 'react';
 import { validateFileType, MAX_FILE_SIZE, ALLOWED_FILE_TYPES } from '@/lib/fileUtils';
+// Note: saveFileToDevice is imported dynamically in the uploadFiles function to ensure client-side only usage
 
 export interface FileUploadState {
   files: File[];
@@ -74,10 +75,21 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
     setState(prev => ({ ...prev, isUploading: true, progress: 0 }));
 
     try {
-      // Simulate upload progress
-      for (let i = 0; i <= 100; i += 10) {
-        await new Promise(resolve => setTimeout(resolve, 200));
-        setState(prev => ({ ...prev, progress: i }));
+      // Import the saveFileToDevice function dynamically to ensure it's only used on the client side
+      const { saveFileToDevice } = await import('@/lib/fileUtils');
+      
+      // Process each file with progress updates
+      const totalFiles = state.files.length;
+      let completedFiles = 0;
+      
+      for (const file of state.files) {
+        // Save the file to the local device
+        await saveFileToDevice(file);
+        
+        // Update progress
+        completedFiles++;
+        const progressPercentage = Math.round((completedFiles / totalFiles) * 100);
+        setState(prev => ({ ...prev, progress: progressPercentage }));
       }
 
       setState(prev => ({
@@ -90,7 +102,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
       setState(prev => ({
         ...prev,
         isUploading: false,
-        error: error instanceof Error ? error.message : 'Upload failed',
+        error: error instanceof Error ? error.message : 'Upload faileds',
       }));
     }
   }, [state.files]);

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "@/styles/dropzone.css";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { ColorThemeProvider } from "@/context/ThemeColorContext";
 import { CookieToast } from '@/components/CookieToast';
 
 const geistSans = Geist({
@@ -34,8 +35,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased transition-colors duration-300`}
       >
         <ThemeProvider>
-          {children}
-          <CookieToast />
+          <ColorThemeProvider>
+            {children}
+            <CookieToast />
+          </ColorThemeProvider>
         </ThemeProvider>
       </body>
     </html>

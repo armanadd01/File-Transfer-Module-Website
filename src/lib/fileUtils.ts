@@ -31,3 +31,35 @@ export const ALLOWED_FILE_TYPES = [
   'application/x-zip-compressed',
   'application/octet-stream'
 ];
+
+/**
+ * Save a file to the local device
+ * This function creates a download link and triggers it to save the file locally
+ */
+export const saveFileToDevice = (file: File, customFileName?: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    try {
+      // Create a URL for the file
+      const fileURL = URL.createObjectURL(file);
+      
+      // Create a download link
+      const downloadLink = document.createElement('a');
+      downloadLink.href = fileURL;
+      downloadLink.download = customFileName || file.name;
+      
+      // Append to the document, click it, and remove it
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      
+      // Clean up the URL object
+      setTimeout(() => {
+        URL.revokeObjectURL(fileURL);
+      }, 100);
+      
+      resolve(`File ${customFileName || file.name} saved successfully`);
+    } catch (error) {
+      reject(error instanceof Error ? error.message : 'Failed to save file');
+    }
+  });
+};

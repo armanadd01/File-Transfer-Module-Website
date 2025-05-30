@@ -56,7 +56,7 @@ export const ThemeToggle: React.FC = () => {
         whileTap={{ scale: 0.95 }}
         aria-label={`Switch theme mode (currently ${theme} mode)`}
       >
-        <span className="absolute opacity-0 group-hover:opacity-100 bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs font-medium text-white bg-gray-900 dark:bg-gray-700 rounded-md shadow-sm transition-opacity duration-300 pointer-events-none whitespace-nowrap">
+        <span className="absolute -bottom-14 opacity-0 group-hover:opacity-100 mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs font-medium text-white bg-gray-900 dark:bg-gray-700 rounded-md shadow-sm transition-opacity duration-300 pointer-events-none whitespace-nowrap">
           {isSystem ? `Using system preference (${resolvedTheme})` : `Currently in ${theme} mode`}<br />
           Click to cycle through modes
         </span>
