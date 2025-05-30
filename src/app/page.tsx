@@ -13,14 +13,14 @@ export default function Home() {
       <div className="flex flex-col min-h-screen">
         
         <ResizablePanelGroup direction="horizontal" >
-          <ResizablePanel defaultSize={45} className="sidebar-area">
+          <ResizablePanel defaultSize={45} minSize={40} className="sidebar-area">
                 <Header title="Dashboard" />
             <div className="flex-1 border-t border-gray-200 dark:border-gray-700">
               <ChildPages />
             </div>
           </ResizablePanel>
           <ResizableHandle withHandle />
-          <ResizablePanel defaultSize={55} className="upload-area">
+          <ResizablePanel defaultSize={55} minSize={40} className="upload-area">
             <div>
               <FileUpload />
             </div>
