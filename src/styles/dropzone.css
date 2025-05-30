@@ -5,7 +5,10 @@
   overflow: hidden;
   overflow-y: scroll;
   display: grid;
+  border-radius: 0px !important;
+  border: 0px solid #dbeafe !important;
   /* grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); */
+  padding: 2rem !important;
 }
 .dropzone.dz-drag-hover {
   border-color: #1e40af;
@@ -25,18 +28,20 @@
 
 /* Grid layout for previews */
 .dropzone.dz-started {
-  /* display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  grid-template-rows: repeat(auto-fill, minmax(120px, 1fr));
+  grid-column-gap: 2rem;
+  grid-row-gap: 2rem;
   align-items: start;
-  justify-items: start; */
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  align-items: start;
-  justify-content: flex-start;
-  align-content: flex-start;
-  gap: 2rem;
+  justify-items: start;
+  /* display: flex; */
+  /* flex-wrap: wrap; */
+  /* flex-direction: row; */
+  /* align-items: start; */
+  /* justify-content: flex-start; */
+  /* align-content: flex-start; */
+  /* gap: 2rem; */
   align-items: start;
   justify-content: flex-start;
 }
@@ -87,30 +92,42 @@
 
 .dropzone .dz-preview .dz-remove{
   position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 24px;
-  height: 24px;
-  background: rgba(241, 6, 6, 0.1);
-  backdrop-filter: blur(5px);
+  bottom: 10px;
+  left: 20px;
+  /* width: 24px; */
+  /* height: 24px; */
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(15px);
+  border-radius: 10px !important;
+  padding: 4px 10px;
+  /* backdrop-filter: blur(5px); */
   color: #ec6060;
   border-radius: 50%;
   text-align: center;
-  line-height: 24px;
+  line-height: 14px;
   font-size: 14px;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); */
   z-index: 20;
   text-decoration: none;
   transition: all 0.3s ease;
+  display: none;
+  opacity: 0;
 }
+
+.dropzone .dz-preview:hover .dz-remove {
+  display: block;
+  opacity: 1;
+}
+
 :root[class~="dark"] .dropzone .dz-preview .dz-remove {
-  background: rgba(241, 6, 6, 0.2);
+  /* background: rgba(241, 6, 6, 0.2); */
   color: #f87171;
 }
 
 
 .dropzone .dz-preview .dz-remove:hover {
   color: #b91c1c;
+  text-decoration: none !important;
 }

@@ -87,14 +87,39 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(({
   useEffect(() => {
     const dropzone = new Dropzone('#upload-zone', {
       url: '/api/upload',
-      acceptedFiles: '.psd,.tiff,.jpg,.jpeg,.webp,.png,.avif,.svg',
+      acceptedFiles: [
+        // Image files
+        'image/*',
+        '.psd', '.tif', '.tiff', '.ai', '.eps', '.svg', '.raw', '.cr2', '.nef', '.orf', '.sr2', '.bmp', '.heic', '.indd', '.xcf',
+        // Microsoft Office documents
+        '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx',
+        // OpenDocument formats
+        '.txt', '.rtf', '.csv', '.tsv', '.md', '.xml', '.json', '.yaml', '.yml', '.epub', '.mobi', '.tex', '.log',
+        // Apple iWork documents
+        '.pages', '.numbers', '.key',
+        // Google Docs formats
+        '.gdoc', '.gsheet', '.gslides',
+        // Other common document formats
+        '.txt', '.rtf', '.csv', '.tsv', '.md', '.xml', '.json', '.yaml', '.yml',
+        // PDF
+        'application/pdf',
+        // Programming files
+        // '.js', '.ts', '.py', '.java', '.c', '.cpp', '.cs', '.rb', '.php', '.html', '.css', '.json', '.xml', '.sql', '.go', '.swift', '.kt', '.swift', '.kt', '.rs', '.sh', '.bash', '.pl', '.lua', '.yml', '.yaml', '.md', '.csv', '.tsv', '.log', '.conf', '.ini', '.env', '.bat', '.ps1', '.vbs', '.cmd',
+        // Audio files
+        '.mp3', '.wav', '.ogg', '.flac', '.aac', '.m4a', '.wma', '.opus', '.aiff', '.alac',
+        // Video files
+        '.mp4', '.mkv', '.avi', '.mov', '.wmv', '.flv', '.webm', '.mpeg', '.mpg', '.3gp', '.m4v', '.ts',
+        // Archive and compressed files
+        '.zip', '.rar', '.7z', '.tar', '.gz', '.bz2', '.xz', '.iso'
+      ].join(','), // Accept all image files, PDFs, microsoft office documents, code archives, RAR, ZIP and common archive formats and compressed formats 
+      // maxFiles: 8,
       maxFilesize: 1024, // 1GB
       addRemoveLinks: true,
       clickable: true,
       createImageThumbnails: true,
       thumbnailMethod: 'contain',
-      autoProcessQueue: true,
-      parallelUploads: 8,
+      autoProcessQueue: false,
+      // parallelUploads: 8,
       previewsContainer: '#upload-zone',
       // previewTemplate: '<div class="dz-preview dz-file-preview"><div class="dz-details"><div class="dz-filename"><span data-dz-name></span></div><div class="dz-size" data-dz-size></div><img data-dz-thumbnail /></div><div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div><div class="dz-success-mark"><span><svg width="54" height="54" viewBox="0 0 54 54" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M10.2071 29.7929L14.2929 25.7071C14.6834 25.3166 15.3166 25.3166 15.7071 25.7071L21.2929 31.2929C21.6834 31.6834 22.3166 31.6834 22.7071 31.2929L38.2929 15.7071C38.6834 15.3166 39.3166 15.3166 39.7071 15.7071L43.7929 19.7929C44.1834 20.1834 44.1834 20.8166 43.7929 21.2071L22.7071 42.2929C22.3166 42.6834 21.6834 42.6834 21.2929 42.2929L10.2071 31.2071C9.81658 30.8166 9.81658 30.1834 10.2071 29.7929Z"/></svg></span></div><div class="dz-error-mark"><span>✘</span></div><div class="dz-error-message"><span data-dz-errormessage></span></div></div>',
       dictFallbackMessage: 'Your browser does not support drag\'n\'drop file uploads.',
@@ -112,7 +137,8 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(({
       dictResponseError: 'Server responded with {{statusCode}} code',
       dictCancelUpload: 'Cancel upload',
       dictCancelUploadConfirmation: 'Are you sure you want to cancel this upload?',
-      dictRemoveFile: '<svg  viewBox="0 0 54 54"fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M26.2929 20.2929L19.2071 13.2071C18.8166 12.8166 18.1834 12.8166 17.7929 13.2071L13.2071 17.7929C12.8166 18.1834 12.8166 18.8166 13.2071 19.2071L20.2929 26.2929C20.6834 26.6834 20.6834 27.3166 20.2929 27.7071L13.2071 34.7929C12.8166 35.1834 12.8166 35.8166 13.2071 36.2071L17.7929 40.7929C18.1834 41.1834 18.8166 41.1834 19.2071 40.7929L26.2929 33.7071C26.6834 33.3166 27.3166 33.3166 27.7071 33.7071L34.7929 40.7929C35.1834 41.1834 35.8166 41.1834 36.2071 40.7929L40.7929 36.2071C41.1834 35.8166 41.1834 35.1834 40.7929 34.7929L33.7071 27.7071C33.3166 27.3166 33.3166 26.6834 33.7071 26.2929L40.7929 19.2071C41.1834 18.8166 41.1834 18.1834 40.7929 17.7929L36.2071 13.2071C35.8166 12.8166 35.1834 12.8166 34.7929 13.2071L27.7071 20.2929C27.3166 20.6834 26.6834 20.6834 26.2929 20.2929Z"/></svg>',
+      // dictRemoveFile: '<svg  viewBox="0 0 54 54"fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M26.2929 20.2929L19.2071 13.2071C18.8166 12.8166 18.1834 12.8166 17.7929 13.2071L13.2071 17.7929C12.8166 18.1834 12.8166 18.8166 13.2071 19.2071L20.2929 26.2929C20.6834 26.6834 20.6834 27.3166 20.2929 27.7071L13.2071 34.7929C12.8166 35.1834 12.8166 35.8166 13.2071 36.2071L17.7929 40.7929C18.1834 41.1834 18.8166 41.1834 19.2071 40.7929L26.2929 33.7071C26.6834 33.3166 27.3166 33.3166 27.7071 33.7071L34.7929 40.7929C35.1834 41.1834 35.8166 41.1834 36.2071 40.7929L40.7929 36.2071C41.1834 35.8166 41.1834 35.1834 40.7929 34.7929L33.7071 27.7071C33.3166 27.3166 33.3166 26.6834 33.7071 26.2929L40.7929 19.2071C41.1834 18.8166 41.1834 18.1834 40.7929 17.7929L36.2071 13.2071C35.8166 12.8166 35.1834 12.8166 34.7929 13.2071L27.7071 20.2929C27.3166 20.6834 26.6834 20.6834 26.2929 20.2929Z"/></svg>',
+      dictRemoveFile: 'Remove File',
       dictMaxFilesExceeded: 'You can only upload {{maxFiles}} files at a time',
       dictDefaultMessage: '<div class="flex flex-col items-center justify-center gap-4"><svg xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" class="w-16 h-16 text-gray-400 dark:text-gray-600" width="256" height="256" fill="currentColor"><path d="M18.4,7.379a1.128,1.128,0,0,1-.769-.754h0a8,8,0,1,0-15.1,5.237A1.046,1.046,0,0,1,2.223,13.1,5.5,5.5,0,0,0,.057,18.3,5.622,5.622,0,0,0,5.683,23H11a1,1,0,0,0,1-1h0a1,1,0,0,0-1-1H5.683a3.614,3.614,0,0,1-3.646-2.981,3.456,3.456,0,0,1,1.376-3.313A3.021,3.021,0,0,0,4.4,11.141a6.113,6.113,0,0,1-.073-4.126A5.956,5.956,0,0,1,9.215,3.05,6.109,6.109,0,0,1,9.987,3a5.984,5.984,0,0,1,5.756,4.28,2.977,2.977,0,0,0,2.01,1.99,5.934,5.934,0,0,1,.778,11.09.976.976,0,0,0-.531.888h0a.988.988,0,0,0,1.388.915c4.134-1.987,6.38-7.214,2.88-12.264A6.935,6.935,0,0,0,18.4,7.379Z"/><path d="M18.707,16.707a1,1,0,0,0,0-1.414l-1.586-1.586a3,3,0,0,0-4.242,0l-1.586,1.586a1,1,0,0,0,1.414,1.414L14,15.414V23a1,1,0,0,0,2,0V15.414l1.293,1.293a1,1,0,0,0,1.414,0Z"/></svg><div class="text-lg text-center font-medium text-gray-900 dark:text-gray-100">Drop files to upload<div class="text-sm text-gray-500 dark:text-gray-400">or click to select files</div></div></div>',
       // PreviewTemplate: '<div class="dz-preview dz-file-preview"><div class="dz-details" ></div></div>',
@@ -131,6 +157,29 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(({
     });
     dropzone.on('drop', () => {
       document.getElementById('upload-zone')?.classList.remove('dz-drag-hover');
+    });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    dropzone.on('sending', (_: unknown, file: DropzoneFile) => {
+      // This event is triggered when the file is being sent to the server
+      // You can set the uploading state here
+      setState((prev: FileUploadState) => ({
+        ...prev,
+        isUploading: true,
+        progress: 0,
+      }));
+      // if file is actually a folder
+      // if(file.fullPath){
+      //     data.append("fullPath", file.fullPath);
+      // }
+      console.log("A file is being sent");
+
+    });
+    dropzone.on('uploadprogress', (_: unknown, progress: number) => {
+      setState((prev: FileUploadState) => ({
+        ...prev,
+        progress: Math.round(progress),
+      }));
+      console.log(`Upload progress: ${progress}%`);
     });
     dropzone.on('success', (_: unknown, file: DropzoneFile) => {
       setState((prev: FileUploadState) => ({

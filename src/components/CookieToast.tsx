@@ -29,7 +29,7 @@ export function CookieToast() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 p-4 z-50">
-      <Card className="max-w-2xl mx-auto">
+      <Card className="max-w-2xl mx-auto w-full bg-white/40 dark:bg-gray-800/40 backdrop-blur-sm shadow-lg">
         <CardContent className="p-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground">

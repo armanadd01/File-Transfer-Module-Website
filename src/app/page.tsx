@@ -13,9 +13,9 @@ export default function Home() {
       <div className="flex flex-col min-h-screen">
         
         <ResizablePanelGroup direction="horizontal" >
-          <ResizablePanel defaultSize={45} minSize={40} className="sidebar-area">
+          <ResizablePanel defaultSize={45} minSize={25} className="sidebar-area">
                 <Header title="Dashboard" />
-            <div className="flex-1 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex-1  border-gray-200 dark:border-gray-700">
               <ChildPages />
             </div>
           </ResizablePanel>

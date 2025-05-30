@@ -73,10 +73,10 @@ export function Header({ showBackButton, onBack, title }: HeaderProps) {
               {[
                 { id: 'upload-form', name: 'Upload Form' },
                 { id: 'transfers', name: 'Transfers' },
-                { id: 'history', name: 'History' },
+                // { id: 'history', name: 'History' },
                 { id: 'pricing', name: 'Pricing' },
                 { id: 'branding', name: 'Branding' },
-                { id: 'reviews', name: 'Reviews' },
+                // { id: 'reviews', name: 'Reviews' },
               ].map(({ id, name }) => (
                 <button
                   key={id}
