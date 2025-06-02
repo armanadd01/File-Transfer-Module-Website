@@ -61,7 +61,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setTheme(prevTheme => {
       switch (prevTheme) {
         case 'light': return 'dark';
-        case 'dark': return 'system';
+        // case 'dark': return 'system';
         case 'system': return 'light';
         default: return 'light';
       }

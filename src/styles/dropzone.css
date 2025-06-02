@@ -1,6 +1,6 @@
 /* Custom Dropzone Theme */
 .dropzone {
-  min-height: 100vh;
+  min-height: 100% !important;
   transition: border-color 0.3s;
   overflow: hidden;
   overflow-y: scroll;
@@ -130,4 +130,19 @@
 .dropzone .dz-preview .dz-remove:hover {
   color: #b91c1c;
   text-decoration: none !important;
+}
+
+.dropzone .dz-success-mark {
+  background: linear-gradient(to right, rgba(24, 51, 34, 0.536), rgba(3, 70, 28, 0.481)) !important;
+  backdrop-filter: blur(5px) !important;
+}
+.dropzone .dz-error-mark {
+  background: linear-gradient(to right, rgba(51, 24, 24, 0.536), rgba(70, 3, 3, 0.481)) !important;
+  backdrop-filter: blur(5px) !important;
+}
+.dropzone .dz-success-mark svg {
+  fill: #4ade80 !important;
+}
+.dropzone .dz-error-mark svg {
+  fill: #dc2626 !important;
 }

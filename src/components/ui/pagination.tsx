@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = (options: { variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'; size?: 'default' | 'sm' | 'lg' | 'icon' }) => {
-  const baseClass = 'inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
+  const baseClass = 'inline-flex items-center justify-center rounded-md text-sm font-medium bg-card transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
   
   // Variant classes
   const variantClasses = {

@@ -45,7 +45,7 @@ export const TransferUploadForm = () => {
   }
 
   return (
-    <div className="max-w-md w-full mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg mt-[5vh] space-y-6 transition-colors duration-150">
+    <div className="max-w-md w-full min-h-[calc(100vh-11vh)] flex flex-col justify-center mx-auto space-y-6 transition-colors duration-150">
       <Card>
         <CardHeader>
           <CardTitle>Transfer Upload</CardTitle>

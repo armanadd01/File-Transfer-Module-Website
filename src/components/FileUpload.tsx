@@ -133,6 +133,18 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(({
     files,
     clearFiles,
   }));
+  // Handle error display and reset
+  useEffect(() => {
+    if (state.error) {
+      // Optionally, you can show a toast notification or alert here
+      const timer = setTimeout(() => {
+        setState(prev => ({ ...prev, error: null })); // Reset error after displaying it
+      }, 3000); // Clear error after 3 seconds
+      return () => clearTimeout(timer); // Cleanup timer on unmount
+    }
+    // Reset error after displaying it
+
+   }, [state.error]);
 
   useEffect(() => {
     const dropzone = new Dropzone('#upload-zone', {
@@ -165,7 +177,7 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(({
         '.zip', '.rar', '.7z', '.tar', '.gz', '.bz2', '.xz', '.iso'
       ].join(','), // Accept all image files, PDFs, microsoft office documents, code archives, RAR, ZIP and common archive formats and compressed formats 
       // maxFiles: 8,
-      maxFilesize: 1024, // 1GB
+      maxFilesize: 10240, // 10GB
       addRemoveLinks: true,
       // clickable: true,
       // Enable auto processing to upload files automatically
@@ -336,12 +348,13 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(({
       dropzone.destroy();
     };
   }, []);
+  
 
   return (
-    <div className={`w-full  ${className}`} {...props}>
+    <div className={`w-full relative ${className}`} {...props}>
       <Card
         id="upload-zone"
-        className="dropzone !min-h-[100vh] !max-h-[100vh]"
+        className="dropzone !min-h-[100vh] !max-h-[100vh] "
       >
         {/* <AnimatePresence>
           {files.length === 0 && (
@@ -457,13 +470,17 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(({
         )} */}
       </Card>
 
-      <AnimatePresence>
+      <AnimatePresence
+        initial={false}
+        mode="wait"
+      >
         {error && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="p-4 text-red-700 bg-red-100 dark:bg-red-900/20 dark:text-red-400 rounded-lg"
+            
+            className="absolute bottom-5 right-[10%] left-[10%] max-h-40 min-h-10 p-4 text-red-700 bg-red-100/30 dark:bg-red-900/20 dark:text-red-400 backdrop-blur-sm shadow-lg rounded-lg text-center font-bold z-[1000] transition-all duration-300"
           >
             {error}
           </motion.div>

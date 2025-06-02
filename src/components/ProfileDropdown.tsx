@@ -19,7 +19,7 @@ export function ProfileDropdown() {
       }
     } catch {
       // NavigationProvider not available, use default values
-      console.log('Navigation context not available');
+      console.error('Navigation context not available');
     }
 
   return (
